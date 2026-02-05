@@ -4,7 +4,7 @@ PyDew Valley is a project originally created by ClearCode in Python using pygame
 
 This expanded version will be used by the [University of Zurich's Department of Psychology](https://www.psychologie.uzh.ch/en.html) in an experimental study in social psychology. 
 
-This particular repository covers the versions of the game used for the second part of the study.
+This particular repository covers the versions of the game used for a third study that is independent of [the first](https://github.com/sloukit/pydew-valley-uzh) and [the second study](https://github.com/sloukit/pydew-valley-uzh-second-study)
 
 For more information, please contact s.kittelberger[at]psychologie.uzh.ch.
 
@@ -68,41 +68,8 @@ We use [Ruff](https://docs.astral.sh/ruff/) for linting and formatting. Run `pip
 ## Use of AI
 We do not use AI for visual and design tasks.
 
-## Contributing
-
-Please check [CONTRIBUTING.md](./CONTRIBUTING.md) for more information.
-
-## Team
-
-This section is continuously updated.
-
-- [Sophie Kittelberger](https://github.com/sloukit), Project Director
-- [larsbutler](https://github.com/larsbutler), Project Director, Game Developer, & Quality Analyst
-- [bromeon](https://github.com/bromeon), Project Director, Game Developer, & Quality Analyst
-- [novial](https://github.com/novialriptide), Game Developer & Quality Analyst
-- [fortwoone](https://github.com/fortwoone), Game Developer & Quality Analyst
-- [richkdev](https://github.com/richkdev), Game Developer & Quality Analyst
-- [pmp-p](https://github.com/pmp-p), Game Developer & Quality Analyst
-- [Daniel Look](https://github.com/MrTup1), Game Developer & Quality Analyst
-- [Minaam Zubair](https://github.com/goatmanking), Game Developer & Quality Analyst
-- [bydariogamer](https://github.com/bydariogamer), Game Developer
-- [Brody Epstein](https://github.com/Eskimo396), Game Developer
-- [Danilo Saiu](https://github.com/ultimateownsz), Game Developer
-- [TMN_SGR](https://github.com/TMN-SGR), Game Artist
-- [Adrienne Bradley](https://github.com/yoadrienne48), Game Artist
-- [farg-eh](https://github.com/farg-eh), Game Artist & Game Developer
-- [nteinert2005](https://github.com/nteinert2005), Game Artist & Game Developer
-- [Evelin Toth](https://github.com/SSnowly), Game Artist & Game Developer
-- [Leon](https://github.com/RUposhcat), Game Artist & Game Developer
-- [MortalCoder](https://github.com/MortalCoder), Game Musician & Sound Designer
-- [asterli6](https://github.com/asterli6), Game Musician & Sound Designer
-- [dee-a-go](https://github.com/dee-a-go), Game Developer, Game Musician, & Sound Designer
-- [Adam Kudelas](https://github.com/LittleBread69), Game Developer, Interim Project Manager, & Quality Analyst
-
-
 ## Relevant Links
 
-- Project Task List, https://github.com/users/sloukit/projects/1
 - Project's Discord Server, https://discord.gg/SuthU2qKaZ
 - Pygame Community's Discord Server, https://discord.gg/pygame
 - ClearCode's Discord Server, https://discord.gg/Z2C3vnrxef
