@@ -27,7 +27,7 @@ from typing import Any, Callable, Type
 import pygame  # noqa
 
 from src.controls import Controls
-from src.enums import FarmingTool, InventoryResource, ItemToUse, StudyGroup
+from src.enums import FarmingTool, InventoryResource, ItemToUse
 from src.events import OPEN_INVENTORY, START_QUAKE, post_event
 from src.gui.interface.emotes import PlayerEmoteManager
 from src.npc.bases.npc_base import NPCBase
@@ -93,7 +93,6 @@ class Player(Character):
             assets=assets,
             groups=groups,
             collision_sprites=collision_sprites,
-            study_group=StudyGroup.INGROUP,
             apply_tool=apply_tool,
             plant_collision=plant_collision,
         )
@@ -121,7 +120,6 @@ class Player(Character):
         self.has_hat = save_file.has_hat
         self.has_horn = save_file.has_horn
         self.has_outgroup_skin = save_file.has_outgroup_skin
-        self.study_group: StudyGroup = save_file.study_group
         self.dt_last_pos_log = 0
         self.blocked_from_market = False
 

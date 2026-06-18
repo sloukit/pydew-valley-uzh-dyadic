@@ -2,7 +2,6 @@ from typing import Any
 
 import pygame
 
-from src.enums import StudyGroup
 from src.gui.interface.dialog import DialogueManager
 from src.screens.level import Level
 from src.settings import GAME_LANGUAGE, TUTORIAL_TB_LEFT, TUTORIAL_TB_TOP

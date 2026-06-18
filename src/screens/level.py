@@ -19,7 +19,6 @@ from src.enums import (
     Layer,
     Map,
     ScriptedSequence,
-    StudyGroup,
 )
 from src.events import (
     DIALOG_ADVANCE,
@@ -493,7 +492,7 @@ class Level:
 
     # plant collision
     def plant_collision(self, character: Character):
-        area = self.soil_manager.get_area(character.study_group)
+        area = self.soil_manager.area
         if area.plant_sprites:
             for plant in area.plant_sprites:
                 if plant.hitbox_rect.colliderect(character.hitbox_rect):

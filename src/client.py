@@ -48,7 +48,7 @@ def authn(
                     "token": play_token,
                     "jwt": "dummy_token",
                     "adherence": True,
-                    "game_version": 1,
+                    "game_version": 3,
                 }
             )
         except Exception as err:

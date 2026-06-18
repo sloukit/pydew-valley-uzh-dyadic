@@ -10,7 +10,7 @@ from src.colors import (
     SL_ORANGE_DARK,
     SL_ORANGE_MEDIUM,
 )
-from src.enums import EndAssessmentDimension, StudyGroup
+from src.enums import EndAssessmentDimension
 from src.fblitter import FBLITTER
 from src.gui.menu.abstract_menu import AbstractMenu
 from src.gui.menu.components import AbstractButton

@@ -2,7 +2,7 @@ from collections.abc import Callable
 
 import pygame
 
-from src.enums import GameState, StudyGroup
+from src.enums import GameState
 from src.gui.menu.general_menu import GeneralMenu
 from src.settings import SCREEN_HEIGHT, SCREEN_WIDTH
 

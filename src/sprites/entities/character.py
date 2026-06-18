@@ -12,7 +12,6 @@ from src.enums import (
     InventoryResource,
     ItemToUse,
     Layer,
-    StudyGroup,
 )
 from src.fblitter import FBLITTER
 from src.sprites.entities.entity import Entity
@@ -25,7 +24,6 @@ class Character(Entity, ABC):
     tool_active: bool
     just_used_tool: bool
     apply_tool: Callable[[FarmingTool, tuple[float, float], Self], None]
-    study_group: StudyGroup
     has_goggles: settings.GogglesStatus
 
     current_seed: FarmingTool
@@ -36,7 +34,6 @@ class Character(Entity, ABC):
         assets: EntityAsset,
         groups: tuple[pygame.sprite.Group, ...],
         collision_sprites: pygame.sprite.Group,
-        study_group: StudyGroup,
         apply_tool: Callable[[FarmingTool, tuple[float, float], Self], None],
         plant_collision: Callable[[Self], None],
         z=Layer.MAIN,
@@ -52,7 +49,6 @@ class Character(Entity, ABC):
 
         # TODO: implement compatibility with this, e.g. NPCs reacting differently to
         #  emotes depending on the group they belong to and the player's
-        self.study_group = study_group
         self.has_goggles = None
 
         self.facing_direction = Direction.DOWN
@@ -159,7 +155,7 @@ class Character(Entity, ABC):
         # blit_list = []
 
         # Render the necklace if the character has it and is in the ingroup
-        is_in_ingroup = not self.in_outgroup
+        is_in_ingroup = True
 
         if is_in_ingroup:
             super().draw(display_surface, rect, camera)

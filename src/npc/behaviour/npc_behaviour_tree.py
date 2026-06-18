@@ -6,7 +6,7 @@ from typing import Callable
 
 import pygame
 
-from src.enums import Direction, FarmingTool, ItemToUse, Map, StudyGroup
+from src.enums import Direction, FarmingTool, ItemToUse, Map
 from src.npc.behaviour.ai_behaviour_tree_base import (
     Action,
     Condition,

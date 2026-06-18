@@ -10,7 +10,6 @@ from src.enums import (
     InventoryResource,
     Layer,
     SeedType,
-    StudyGroup,
 )
 from src.gui.interface.emotes import NPCEmoteManager
 from src.npc.bases.npc_base import NPCBase
@@ -30,7 +29,6 @@ class NPC(NPCBase):
         assets: EntityAsset,
         groups: tuple[pygame.sprite.Group, ...],
         collision_sprites: pygame.sprite.Group,
-        study_group: StudyGroup,
         apply_tool: Callable[[FarmingTool, tuple[float, float], Character], None],
         plant_collision: Callable[[Character], None],
         soil_manager: SoilManager,
@@ -49,7 +47,6 @@ class NPC(NPCBase):
             assets=assets,
             groups=groups,
             collision_sprites=collision_sprites,
-            study_group=study_group,
             apply_tool=apply_tool,
             plant_collision=plant_collision,
             behaviour_tree_context=NPCIndividualContext(self),
@@ -59,7 +56,7 @@ class NPC(NPCBase):
         )
         self.is_v3 = is_v3
         self.start_tile_pos = self.get_tile_pos()  # capture the NPC start position
-        self.soil_area = soil_manager.get_area(self.study_group)
+        self.soil_area = soil_manager.area
         self.has_necklace = False
         self.has_hat = False
         if has_hat:
@@ -106,8 +103,6 @@ class NPC(NPCBase):
             InventoryResource.WHEAT_SEED: 999,
             InventoryResource.BROCCOLI_SEED: 999,
         }
-
-        self.assign_outfit_ingroup()
 
         # NPC health / sickness / death
         self.is_sick = False
@@ -215,34 +210,6 @@ class NPC(NPCBase):
             tile for tile in untilled_tiles if tile in adjacent_tiles
         ]
         return adjacent_untilled_tiles
-
-    def assign_outfit_ingroup(
-        self, ingroup_40p_hat_necklace_appearance: bool = False
-    ) -> None:
-        if self.study_group == StudyGroup.OUTGROUP:
-            self.deactivate_necklace()
-            self.deactivate_hat()
-            self.has_horn = True
-            self.has_outgroup_skin = True
-            return
-
-        # 40% of the ingroup NPCs should wear a hat and a necklace, and 60% of the ingroup NPCs should only wear the hat
-        else:
-            # # if npc has special features set in Tiled map using 'features' custom field - do not change it
-            # # it's used in intro scripted sequence
-            if self.special_features:
-                return
-
-            if ingroup_40p_hat_necklace_appearance:
-                if random.random() <= 0.4:
-                    self.activate_necklace()
-                    self.activate_hat()
-                else:
-                    self.deactivate_necklace()
-                    self.activate_hat()
-            else:
-                self.deactivate_necklace()
-                self.deactivate_hat()
 
     # NPC recovery
     def recover(self):

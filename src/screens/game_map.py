@@ -20,7 +20,6 @@ from src.enums import (
     Layer,
     Map,
     SpecialObjectLayer,
-    StudyGroup,
 )
 from src.exceptions import GameMapWarning, InvalidMapError
 from src.groups import AllSprites, PersistentSpriteGroup
@@ -399,10 +398,6 @@ class GameMap:
         self.number_of_hats_to_exclude = 2
         for npc in self.npcs:
             npc.set_allowed_seeds(allowed_seeds)
-            npc.assign_outfit_ingroup(
-                self.round_config.get("ingroup_40p_hat_necklace_appearance", False)
-            )
-            self.exclude_hat_if_possible(npc)
 
     @property
     def size(self):
@@ -647,16 +642,7 @@ class GameMap:
         :param obj: TiledObject to create the warp from
         """
         name = obj.name
-        player_group = self.player.study_group
-        spawnpoint_group = player_group
-        if len(name.split(" ")) == 2:
-            spawnpoint_group = obj.name.split(" ")[1]
-            if spawnpoint_group == "ingroup":
-                spawnpoint_group = StudyGroup.INGROUP
-            if spawnpoint_group == "outgroup":
-                spawnpoint_group = StudyGroup.OUTGROUP
-
-        if "spawnpoint" in name and (player_group == spawnpoint_group):
+        if "spawnpoint" in name:
             if self.player_spawnpoint:
                 warnings.warn(
                     f"Multiple spawnpoints found ({self.player_spawnpoint}, {pos})",
@@ -715,29 +701,12 @@ class GameMap:
             raise InvalidMapError(
                 "At least one NPC was not given an ID on the current map."
             )
-        study_group = StudyGroup.NO_GROUP
-        group = obj.properties.get("group")
-        if group is None:
-            warnings.warn(
-                f"NPC with ID {npc_id} has no group assigned to it", GameMapWarning
-            )
-        else:
-            try:
-                study_group = StudyGroup[group]
-            except KeyError:
-                warnings.warn(
-                    f"NPC with ID {npc_id} has an invalid group '{group}' assigned to "
-                    f"it",
-                    GameMapWarning,
-                )
-
         npc = NPC(
             pos=pos,
             assets=ENTITY_ASSETS.RABBIT,
             # assets=copy.deepcopy(ENTITY_ASSETS.RABBIT),
             groups=(self.all_sprites, self.collision_sprites),
             collision_sprites=self.collision_sprites,
-            study_group=study_group,
             apply_tool=self.apply_tool,
             plant_collision=self.plant_collision,
             soil_manager=self.soil_manager,
@@ -756,7 +725,6 @@ class GameMap:
         no_walking_npc = (
             (
                 gmap != Map.FARM
-                and npc.study_group == StudyGroup.INGROUP
                 and not npc.has_necklace
                 and npc.has_hat
                 and gmap != Map.MINIGAME
@@ -766,7 +734,6 @@ class GameMap:
             and obj.name == "opponent"
         )
         if gmap == Map.MINIGAME and obj.name and obj.name == "opponent":
-            if npc.study_group == self.player.study_group:
                 npc.kill()
 
         cheering = gmap == Map.MINIGAME
@@ -778,10 +745,7 @@ class GameMap:
             npc.conditional_behaviour_tree = NPCBehaviourTree.DO_NOTHING
         elif cheering:
             npc.conditional_behaviour_tree = NPCBehaviourTree.CHEER
-            if npc.study_group == StudyGroup.INGROUP:
-                npc.facing_direction = Direction.RIGHT
-            if npc.study_group == StudyGroup.OUTGROUP:
-                npc.facing_direction = Direction.LEFT
+            npc.facing_direction = Direction.RIGHT
         else:
             npc.conditional_behaviour_tree = NPCBehaviourTree.WOODCUTTING
         return npc
@@ -860,14 +824,14 @@ class GameMap:
                 # create soil layer
                 if tilemap_layer.name == "farmable_ingroup":
                     self.soil_manager.load_area(
-                        StudyGroup.INGROUP, tilemap_layer, save_file.soil_data
+                        tilemap_layer, save_file.soil_data
                     )
                     continue
-                elif tilemap_layer.name == "farmable_outgroup":
-                    self.soil_manager.load_area(
-                        StudyGroup.OUTGROUP, tilemap_layer, save_file.soil_data
-                    )
-                    continue
+                # elif tilemap_layer.name == "farmable_outgroup":
+                #     self.soil_manager.load_area(
+                #         tilemap_layer, save_file.soil_data
+                #     )
+                #     continue
                 elif tilemap_layer.name == "Border":
                     _setup_tile_layer(
                         tilemap_layer,
@@ -1023,12 +987,8 @@ class GameMap:
                 )
                 payload["npc_pos"] = ", ".join(str(round(v)) for v in npc.rect.topleft)
 
-                if self.player.study_group == npc.study_group:
-                    self.player.ingroup_member_interacted = True
-                    payload["emote_target"] = "ingroup"
-                else:
-                    self.player.outgroup_member_interacted = True
-                    payload["emote_target"] = "outgroup"
+                self.player.ingroup_member_interacted = True
+                payload["emote_target"] = "ingroup"
 
                 self.player.send_telemetry("player_interaction", payload)
 
@@ -1055,19 +1015,3 @@ class GameMap:
     def get_size(self):
         return self._tilemap_scaled_size
 
-    def exclude_hat_if_possible(self, npc: NPC):
-        # in version 3 of the game we remove all hat and necklaces for npcs with special features added in the map
-        if self.get_game_version() == 3:
-            if npc.study_group == StudyGroup.INGROUP and npc.npc_id in [368, 372]:
-                npc.deactivate_necklace()
-                npc.deactivate_hat()
-        # in version 1 and 2 of the game we remove hats for two npcs without special features
-        elif self.get_game_version() in [1, 2]:
-            if (
-                npc.npc_id not in [11, 368, 372]
-                and npc.has_hat
-                and self.number_of_hats_to_exclude > 0
-            ):
-                npc.deactivate_necklace()
-                npc.deactivate_hat()
-                self.number_of_hats_to_exclude -= 1

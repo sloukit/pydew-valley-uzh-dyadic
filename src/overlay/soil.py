@@ -4,7 +4,7 @@ from random import choice
 import pygame
 from pytmx import TiledTileLayer
 
-from src.enums import FarmingTool, InventoryResource, Layer, SeedType, StudyGroup
+from src.enums import FarmingTool, InventoryResource, Layer, SeedType
 from src.groups import AllSprites
 from src.savefile.tile_info import TileInfo
 from src.settings import SCALED_TILE_SIZE, Coordinate
@@ -465,15 +465,12 @@ class SoilArea:
 class SoilManager:
     all_sprites: AllSprites
     frames: dict
-
-    _areas: dict[StudyGroup, SoilArea | None]
+    area: SoilArea
 
     def __init__(self, all_sprites: AllSprites, frames: dict):
         self.all_sprites = all_sprites
         self.frames = frames
-
-        self._areas = {i: SoilArea(self.all_sprites, self.frames) for i in StudyGroup}
-
+        self.area = SoilArea(all_sprites, frames)
         self.raining = False
 
     @property
@@ -483,37 +480,27 @@ class SoilManager:
     @raining.setter
     def raining(self, value: bool):
         self._raining = value
-        if self.raining:
-            for area in self.all_areas():
-                area.raining = True
-
-    def all_areas(self):
-        for area in self._areas.values():
-            yield area
-
-    def get_area(self, study_group: StudyGroup) -> SoilArea:
-        area = self._areas[study_group]
-        return area
+        #self.area.raining = value
 
     def load_area(
         self,
-        study_group: StudyGroup,
         layer: TiledTileLayer,
         previous_soil_data: dict | None = None,
     ):
-        self.get_area(study_group).create_soil_tiles(
+        area = SoilArea(self.all_sprites, self.frames)
+        area.create_soil_tiles(
             layer, previous_soil_data=previous_soil_data
         )
+        self.area = area
 
     def all_soil_sprites(self):
-        for area in self.all_areas():
-            yield area.soil_sprites
+        return self.area.soil_sprites
 
     def hoe(self, character: Character, pos):
-        return self.get_area(character.study_group).hoe(pos)
+        return self.area.hoe(pos)
 
     def water(self, character: Character, pos):
-        return self.get_area(character.study_group).water(pos)
+        return self.area.water(pos)
 
     def plant(
         self,
@@ -522,8 +509,7 @@ class SoilManager:
         seed,
         remove_resource: Callable[[InventoryResource, int], bool],
     ):
-        return self.get_area(character.study_group).plant(pos, seed, remove_resource)
+        return self.area.plant(pos, seed, remove_resource)
 
     def update(self):
-        for area in self.all_areas():
-            area.update()
+        self.area.update()

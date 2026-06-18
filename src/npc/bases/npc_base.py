@@ -8,7 +8,7 @@ import pygame
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
-from src.enums import FarmingTool, StudyGroup
+from src.enums import FarmingTool
 from src.gui.interface.emotes import NPCEmoteManager
 from src.npc.bases.ai_behaviour import AIBehaviour
 from src.npc.behaviour.ai_behaviour_tree_base import ContextType
@@ -32,7 +32,6 @@ class NPCBase(Character, AIBehaviour, ABC):
         assets: EntityAsset,
         groups: tuple[pygame.sprite.Group, ...],
         collision_sprites: pygame.sprite.Group,
-        study_group: StudyGroup,
         apply_tool: Callable[[FarmingTool, tuple[float, float], Character], None],
         plant_collision: Callable[[Character], None],
         behaviour_tree_context: ContextType,
@@ -46,7 +45,6 @@ class NPCBase(Character, AIBehaviour, ABC):
             assets=assets,
             groups=groups,
             collision_sprites=collision_sprites,
-            study_group=study_group,
             apply_tool=apply_tool,
             plant_collision=plant_collision,
             z=z,

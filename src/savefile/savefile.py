@@ -4,7 +4,7 @@ from itertools import chain
 import pygame
 
 from src import utils
-from src.enums import FarmingTool, InventoryResource, SeedType, StudyGroup
+from src.enums import FarmingTool, InventoryResource, SeedType
 from src.savefile.tile_info import PlantInfo, TileInfo
 from src.settings import (
     Coordinate,
@@ -50,14 +50,6 @@ def _as_inventoryresource(o: dict):
     return o
 
 
-def _extract_group(o: dict):
-    if "group" in o:
-        ret = o.copy()
-        ret["group"] = StudyGroup(ret["group"])
-        return ret
-    return o
-
-
 def _extract_tile_info(o: dict):
     if "soil_data" in o:
         ret = o.copy()
@@ -82,7 +74,6 @@ def _extract_tile_info(o: dict):
 def _decoder_object_hook(o):
     processed = _as_farmingtool(o)
     processed = _as_inventoryresource(processed)
-    processed = _extract_group(processed)
     processed = _extract_tile_info(processed)
     return processed
 
@@ -96,7 +87,6 @@ class SaveFile:
     _has_goggles: GogglesStatus
     _has_hat: HatStatus
     _has_necklace: NecklaceStatus
-    _study_group: StudyGroup
     _has_horn: HornStatus
     _has_OutgroupSkin: OutgroupSkinStatus
     _current_tool: FarmingTool
@@ -111,7 +101,6 @@ class SaveFile:
         current_tool: FarmingTool,
         current_seed: FarmingTool,
         inventory: dict[InventoryResource, int],
-        group: StudyGroup,
         goggles_status: GogglesStatus,
         necklace_status: NecklaceStatus,
         hat_status: HatStatus,
@@ -136,7 +125,6 @@ class SaveFile:
             )
             for res in InventoryResource.__members__.values()
         }
-        self.study_group = group
         self.has_goggles = goggles_status
         self.has_necklace = necklace_status
         self.has_hat = hat_status
@@ -148,7 +136,6 @@ class SaveFile:
     @classmethod
     def load(cls):
         data = _load_internal()
-        data.setdefault("group", StudyGroup.INGROUP)
         data.setdefault("goggles_status", None)
         data.setdefault("necklace_status", None)
         data.setdefault("hat_status", False)

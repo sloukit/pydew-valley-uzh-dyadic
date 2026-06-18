@@ -10,7 +10,7 @@ import pygame.gfxdraw
 from pathfinding.core.grid import Grid  # type: ignore[import-untyped]
 
 from src.controls import Controls
-from src.enums import Direction, StudyGroup
+from src.enums import Direction
 from src.exceptions import MinigameSetupError
 from src.groups import PersistentSpriteGroup
 from src.npc.cow import Cow

@@ -31,7 +31,6 @@ from src.enums import (
     SelfAssessmentDimension,
     SocialIdentityAssessmentDimension,
     StartAssessmentDimension,
-    StudyGroup,
 )
 from src.events import (
     DIALOG_ADVANCE,
@@ -120,10 +119,9 @@ _CAMERA_TARGET_TO_TEXT = (
 _CAMERA_TARGET_TO_TEXT_SOLO = (
     "character_introduction_text",
     "ingroup_introduction_text",
-    "outgroup_introduction_text",
     "narrative_text",
 )
-_TARG_SKIP_IDX_SOLO = _CAMERA_TARGET_TO_TEXT_SOLO.index("outgroup_introduction_text")
+#_TARG_SKIP_IDX_SOLO = _CAMERA_TARGET_TO_TEXT_SOLO.index("outgroup_introduction_text")
 _GOGGLES_TUT_TSTAMP = 35
 _ENABLE_SICKNESS_TSTAMP = 33
 _ENABLE_BATH_INFO_TSTAMP = 30  # 30 seconds after volcano eruption
@@ -529,7 +527,6 @@ class Game:
             > 0
             and self.round_end_timer
             > self.round_config["group_market_active_player_sequence_timestamp"][0]
-            and not self.player.in_outgroup
         )
 
     @property
@@ -933,10 +930,10 @@ class Game:
                                 intro_text = get_translated_msg(
                                     self.round_config[new_txt_id]
                                 )
-                            if self.game_version == 3 and index == _TARG_SKIP_IDX_SOLO:
-                                # Skip two targets if the game is in control condition.
-                                cutscene_ani.current_index += 1
-                                cutscene_ani.force_to_next()
+                            # if self.game_version == 3 and index == _TARG_SKIP_IDX_SOLO:
+                            #     # Skip two targets if the game is in control condition.
+                            #     cutscene_ani.current_index += 1
+                            #     cutscene_ani.force_to_next()
                         # end of intro - camera is over the home location
                         elif index == len(cutscene_ani.targets) - 1:
                             if self.dialogue_manager.showing_dialogue:
@@ -976,11 +973,6 @@ class Game:
                 # assign hat and necklace according to regular logic
                 for npc in self.level.game_map.npcs:
                     npc.special_features = None
-                    npc.assign_outfit_ingroup(
-                        self.round_config.get(
-                            "ingroup_40p_hat_necklace_appearance", False
-                        )
-                    )
                 # will be automatically skipped if the level does not have a tutorial (aka is > 1)
                 self.tutorial.start()
 
@@ -1076,7 +1068,7 @@ class Game:
 
                     event = pygame.key.get_pressed()
                     if (
-                        event[pygame.K_RSHIFT]
+                        event[pygame.K_LSHIFT]
                         and self.game_version == DEBUG_MODE_VERSION
                     ):
                         # fast-forward
@@ -1136,12 +1128,6 @@ class Game:
                     elif self._can_notify_questionnaire:
                         message = self.round_config["notify_questionnaire_text"]
                         self._notify(message, "questionnaire")
-                    elif self._can_notify_outgroup_money_income:
-                        message = _get_outgroup_income(
-                            self.round_config["notify_round_end_outgroup_text"],
-                            self.player.in_outgroup,
-                        )
-                        self._notify(message, "round_end_outgroup")
                     elif self._can_start_self_assessment_sequence:
                         # remove first timestamp from list not to repeat infinitely
                         self.round_config["self_assessment_timestamp"] = (
