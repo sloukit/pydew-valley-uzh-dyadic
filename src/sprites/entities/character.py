@@ -144,10 +144,6 @@ class Character(Entity, ABC):
             return True
         return False
 
-    @property
-    def in_outgroup(self):
-        return self.study_group == StudyGroup.OUTGROUP
-
     def draw(self, display_surface: pygame.Surface, rect: pygame.Rect, camera, sick):
         # See src.sprites.entities.sick_color_effect and .player for more info on sickness
 

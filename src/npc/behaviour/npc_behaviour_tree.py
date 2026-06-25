@@ -89,7 +89,7 @@ def will_leave_farm_for_bathhouse(context: NPCIndividualContext) -> bool:
 def go_to_bathhouse(context: NPCIndividualContext) -> bool:
     context.timing_for_bathhouse = NPCSharedContext.get_rnd_timer()
     context.going_to_bathhouse = True
-    is_outgrp = context.npc.study_group == StudyGroup.OUTGROUP
+    is_outgrp = False
     return walk_to_pos(
         context,
         (24 + 30 * is_outgrp, 40),
@@ -99,7 +99,7 @@ def go_to_bathhouse(context: NPCIndividualContext) -> bool:
 
 def will_return_to_farm_from_bathhouse(context: NPCIndividualContext) -> bool:
     shared_ctx = NPCSharedContext
-    is_outgrp = context.npc.study_group == StudyGroup.OUTGROUP
+    is_outgrp = False
     return (
         context.adhering_to_measures
         and context.going_to_bathhouse
@@ -115,7 +115,7 @@ def _reset_state_to_normal(context: NPCIndividualContext, behaviour):
 
 
 def return_from_bathhouse_farm(context: NPCIndividualContext):
-    is_outgrp = context.npc.study_group == StudyGroup.OUTGROUP
+    is_outgrp = False
     return walk_to_pos(
         context,
         (17 + 44 * is_outgrp, 27),

@@ -84,7 +84,7 @@ class Overlay:
 
         # health bar
         if self.round_config.get("healthbar", False):
-            self.health_bar.draw(self.display_surface, self.player.in_outgroup)
+            self.health_bar.draw(self.display_surface)
 
         # bath info display
         self.bath_info.display(current_round)

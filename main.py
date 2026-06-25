@@ -62,7 +62,6 @@ from src.screens.self_assessment_menu import SelfAssessmentMenu
 from src.screens.shop import ShopMenu
 from src.screens.social_identity_assessment import SocialIdentityAssessmentMenu
 from src.screens.start_assessment import StartAssessmentMenu
-from src.screens.switch_to_outgroup_menu import OutgroupMenu
 from src.settings import (
     DEBUG_MODE_VERSION,
     DEV_MODE,
@@ -206,7 +205,7 @@ class Game:
         # config of current game version of a current round: round_config[feature_name] = value
         self.round_config: dict[str, Any] = {}
         # copy first config (for round 1) and use it as a base for the debug version (all features enabled)
-        debug_config = copy.deepcopy(self.rounds_config[0])
+        debug_config = copy.deepcopy(self.rounds_config[2])
 
         for level in debug_config:
             for key, value in level.items():
@@ -311,11 +310,6 @@ class Game:
             self.frames,
             partial(self.send_telemetry, "round_end_content"),
         )
-        self.outgroup_menu = OutgroupMenu(
-            self.player,
-            self.switch_state,
-            partial(self.send_telemetry_and_play, "outgroup_switch", {}),
-        )
 
         self.self_assessment_menu = SelfAssessmentMenu(
             partial(self.send_telemetry_and_play, "self_assessment"),
@@ -377,7 +371,6 @@ class Game:
             GameState.INVENTORY: self.inventory_menu,
             GameState.PLAYER_TASK: self.allocation_task,
             GameState.ROUND_END: self.round_menu,
-            GameState.OUTGROUP_MENU: self.outgroup_menu,
             GameState.SELF_ASSESSMENT: self.self_assessment_menu,
             GameState.SOCIAL_IDENTITY_ASSESSMENT: self.social_identity_assessment_menu,
             GameState.END_ASSESSMENT: self.end_assessment_menu,
@@ -649,7 +642,6 @@ class Game:
                 max_complete_level = max([d["game_round"] for d in lvls_done])
                 day_completions = [d for d in lvls_done if d["game_round"] % 2 == 0]
                 if any(d["event"] == "outgroup_switch" for d in response["status"]):
-                    self.player.study_group = StudyGroup.OUTGROUP
                     self.player.has_outgroup_skin = True
                     self.level.start_become_outgroup_time = (
                         pygame.time.get_ticks() - 22500

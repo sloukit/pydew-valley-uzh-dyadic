@@ -256,27 +256,11 @@ class Tutorial:
             case 10:
                 # check if the player achieved task "interact with an outgroup member"
                 if (
-                    self.player.outgroup_member_interacted
-                    and self.dialogue_manager._get_current_tb().finished_advancing
-                ):
-                    if self.round_config.get("playable_outgroup", False):
-                        self.switch_to_task(11)
-                        self.tasks_achieved += 1
-
-                        self.player.outgroup_member_interacted = False
-                    else:
-                        self.show_tutorial_end()
-                        self.tasks_achieved = self.n_tasks
-                        self.player.blocked = True
-
-            case 11:
-                # check if the player achieved task "walk around the outgroup farm and switch to the outgroup"
-                if (
-                    self.player.study_group == StudyGroup.OUTGROUP
+                    self.player.ingroup_member_interacted
                     and self.dialogue_manager._get_current_tb().finished_advancing
                 ):
                     self.show_tutorial_end()
-                    self.tasks_achieved += 1
+                    self.tasks_achieved = self.n_tasks
                     self.player.blocked = True
 
             case self.n_tasks:  # wait for space pressed to end the tutorial

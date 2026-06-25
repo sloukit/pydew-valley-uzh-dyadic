@@ -179,17 +179,11 @@ class CowHerding(Minigame):
 
         self.overlay = _CowHerdingOverlay()
         self.scoreboard = _CowHerdingScoreboard(self.finish)
-        opponent_study_group = (
-            StudyGroup.OUTGROUP
-            if self._state.player.study_group == StudyGroup.INGROUP
-            else StudyGroup.INGROUP
-        )
         opponent = NPC(
             pos=(0, 0),
             assets=ENTITY_ASSETS.RABBIT,
             groups=(self._state.all_sprites, self._state.collision_sprites),
             collision_sprites=self._state.collision_sprites,
-            study_group=opponent_study_group,
             apply_tool=lambda _, __, ___: None,
             plant_collision=lambda _: None,
             soil_manager=self._state.game_map.soil_manager,
@@ -202,21 +196,16 @@ class CowHerding(Minigame):
             is_v3=True,
         )
         self._state.game_map.npcs.append(opponent)
-        side_map = {StudyGroup.INGROUP: "L", StudyGroup.OUTGROUP: "R"}
+        self._player_side = CowHerdingSideState("L", self._state.player)
+        self._opponent_side = CowHerdingSideState("R", opponent)
+        #script_group = {StudyGroup.INGROUP: "ingroup", StudyGroup.OUTGROUP: "outgroup"}
 
-        self._player_side = CowHerdingSideState(
-            side_map[self._state.player.study_group], self._state.player
-        )
-        self._opponent_side = CowHerdingSideState(
-            side_map[opponent_study_group], opponent
-        )
-        script_group = {StudyGroup.INGROUP: "ingroup", StudyGroup.OUTGROUP: "outgroup"}
-
-        script_path = resource_path(
-            "data/npc_scripted_paths/cow_herding/"
-            + script_group[opponent_study_group]
-            + "/"
-        )
+        # script_path = resource_path(
+        #     "data/npc_scripted_paths/cow_herding/"
+        #     + script_group[opponent_study_group]
+        #     + "/"
+        # )
+        script_path = resource_path("data/npc_scripted_paths/cow_herding/outgroup/")
 
         self._opponent_side_script = CowHerdingScriptedPath.from_file(
             random.choice(glob.glob(glob.escape(script_path) + "*.json"))
@@ -260,7 +249,6 @@ class CowHerding(Minigame):
                 self._minigame_time,
                 self._player_side.cows_herded_in,
                 self._opponent_side_script.total_time,
-                self._state.player.in_outgroup,
             )
         else:
             self._state.player.blocked = False
@@ -388,10 +376,7 @@ class CowHerding(Minigame):
 
     def update(self, dt: float):
         super().update(dt)
-        if self._state.player.study_group == StudyGroup.INGROUP:
-            offset = 300
-        else:
-            offset = -150
+        offset = 300
         self.camera_target.rect = self._state.player.rect.move(offset, 0)
 
         if not self._complete:
@@ -453,7 +438,6 @@ class CowHerding(Minigame):
                 self._player_side.cows_herded_in,
                 self._opponent_side.cows_total,
                 self._opponent_side.cows_herded_in,
-                self._state.player.in_outgroup,
             )
 
         if self._ani_cd_start < self._ctime < self._game_start + 1:

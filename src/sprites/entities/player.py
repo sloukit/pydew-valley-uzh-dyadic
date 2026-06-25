@@ -110,8 +110,8 @@ class Player(Character):
         self.save_file = save_file
         self.controls = controls
         self.load_controls()
-        self.original_speed = 250
-        self.speed = 250
+        self.original_speed = 250 * 4
+        self.speed = self.original_speed
         self.blocked = False
         self.paused = False
         self.interact = interact
