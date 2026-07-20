@@ -4,3 +4,4 @@ pygame-ce>=2.5.2,<3
 requests==2.32.3
 # Only for tools - TODO find way to not install for game.
 openpyxl==3.1.5
+numpy==1.26.4

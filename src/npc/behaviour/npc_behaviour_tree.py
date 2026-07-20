@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import random
 from enum import Enum
+from math import isnan
 from typing import Callable
 
 import pygame
+
+import numpy as np
 
 from src.enums import Direction, FarmingTool, ItemToUse, Map
 from src.npc.behaviour.ai_behaviour_tree_base import (
@@ -15,10 +18,13 @@ from src.npc.behaviour.ai_behaviour_tree_base import (
     Sequence,
 )
 from src.npc.behaviour.context import NPCIndividualContext, NPCSharedContext
+from src.npc.dyadic.dyadic_npc import DyadicNPCContext
 from src.npc.utils import pf_move_to, pf_wander
 from src.settings import DEV_MODE, SCALED_TILE_SIZE
 from src.sprites.objects.tree import Tree
 from src.support import distance, near_tiles
+from src.timer import Timer
+from src import xplat
 
 
 def walk_to_pos(
@@ -665,13 +671,42 @@ def will_cheer(context: NPCIndividualContext) -> bool:
 
 def cheer(context: NPCIndividualContext) -> bool:
     context.npc.emote_manager.show_emote(context.npc, "cheer_ani")
-
+    return True
 
 # endregion
+
+def is_away_from_partner(context: DyadicNPCContext) -> bool:
+    npc = context.npc
+
+    if npc.pf_path:
+        return False
+
+    current = np.asarray(npc.get_tile_pos())
+    partner = np.asarray(npc.partner.get_tile_pos())
+    direction = partner - current
+    length = np.linalg.norm(direction)
+
+    return length > 3
+
+def follow_partner(context: DyadicNPCContext) -> bool:
+    if context.npc.pf_path:
+        return False
+
+    @context.npc.on_path_completion
+    def _():
+        if hasattr(context.npc, "partner_id") and context.npc.partner_id == -1:
+            xplat.log("completed path")
+
+    context.npc.follow_partner()
+    return True
 
 
 # region behaviour trees
 class NPCBehaviourTree(NodeWrapper, Enum):
+    FOLLOW_PARTNER = Sequence(
+        Condition(is_away_from_partner),
+        Action(follow_partner)
+    )
     FARMING = Selector(
         Sequence(
             Condition(will_farm),

@@ -247,7 +247,7 @@ class Level:
         )
         self.prev_player_pos = (0, 0)
         self.all_sprites.add_persistent(self.player)
-        self.collision_sprites.add_persistent(self.player)
+        #self.collision_sprites.add_persistent(self.player)
 
         # weather
         self.game_time = GameTime()

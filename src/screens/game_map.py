@@ -12,6 +12,7 @@ from pytmx import (  # type: ignore[import-untyped]
     TiledTileLayer,
 )
 
+from src import xplat
 from src.camera import CameraTarget, ZoomArea, ZoomManager
 from src.enums import (
     Direction,
@@ -39,6 +40,7 @@ from src.npc.behaviour.cow_behaviour_tree import (
 from src.npc.behaviour.npc_behaviour_tree import NPCBehaviourTree
 from src.npc.chicken import Chicken
 from src.npc.cow import Cow
+from src.npc.dyadic.dyadic_npc import DyadicNPC
 from src.npc.npc import NPC
 from src.npc.setup import AIData
 from src.npc.utils import pf_add_matrix_collision
@@ -274,7 +276,7 @@ class GameMap:
     player_exit_warps: pygame.sprite.Group
 
     # non-player entities
-    npcs: list[NPC]
+    npcs: list[DyadicNPC]
     animals: list[Animal]
 
     round_config: dict[str, Any]
@@ -373,7 +375,7 @@ class GameMap:
             self.npcs = []
 
         if SETUP_PATHFINDING:
-            AIData.update(self._pf_matrix, self.player, [*self.npcs, *self.animals])
+            AIData.update(self._pf_matrix, self.player, [])
 
             if ENABLE_NPCS:
                 self._setup_emote_interactions()
@@ -701,11 +703,14 @@ class GameMap:
             raise InvalidMapError(
                 "At least one NPC was not given an ID on the current map."
             )
-        npc = NPC(
+
+        is_dyad_main: bool = obj.properties.get("is_dyad_main")
+        partner_id: int = obj.properties.get("partner_id")
+        npc = DyadicNPC(
             pos=pos,
             assets=ENTITY_ASSETS.RABBIT,
             # assets=copy.deepcopy(ENTITY_ASSETS.RABBIT),
-            groups=(self.all_sprites, self.collision_sprites),
+            groups=(self.all_sprites,),
             collision_sprites=self.collision_sprites,
             apply_tool=self.apply_tool,
             plant_collision=self.plant_collision,
@@ -715,6 +720,8 @@ class GameMap:
             has_hat=has_hat,
             has_necklace=has_necklace,
             special_features=features,
+            is_dyad_main=is_dyad_main,
+            partner_id=partner_id,
             npc_id=npc_id,
             is_v3=self.get_game_version() == 3,
         )
@@ -740,7 +747,10 @@ class GameMap:
 
         behaviour = obj.properties.get("behaviour")
         if behaviour != "Woodcutting" and gmap == Map.NEW_FARM:
-            npc.conditional_behaviour_tree = NPCBehaviourTree.FARMING
+            if npc.is_dyad_main:
+                npc.conditional_behaviour_tree = NPCBehaviourTree.FARMING
+            else:
+                npc.continuous_behaviour_tree = NPCBehaviourTree.FOLLOW_PARTNER
         elif no_walking_npc:
             npc.conditional_behaviour_tree = NPCBehaviourTree.DO_NOTHING
         elif cheering:
@@ -910,10 +920,7 @@ class GameMap:
                     case SpecialObjectLayer.NPCS:
                         if not ENABLE_NPCS:
                             continue
-                        self.npcs = _setup_object_layer(
-                            tilemap_layer,
-                            lambda pos, obj: self._setup_npc(pos, obj, gmap),
-                        )
+                        self._setup_npcs(tilemap_layer, gmap)
                     case SpecialObjectLayer.ANIMALS:
                         if not TEST_ANIMALS:
                             continue
@@ -1014,4 +1021,19 @@ class GameMap:
 
     def get_size(self):
         return self._tilemap_scaled_size
+
+    def _setup_npcs(self, tilemap_layer, gmap):
+        self.npcs = _setup_object_layer(
+            tilemap_layer,
+            lambda pos, obj: self._setup_npc(pos, obj, gmap),
+        )
+        npc_dict = dict([(npc.npc_id, npc) for npc in self.npcs])
+
+        for npc in self.npcs:
+            if npc.partner_id == -1:
+                npc.partner = self.player
+            else:
+                npc.partner = npc_dict[npc.partner_id]
+
+        xplat.log("set up dyadic npcs")
 

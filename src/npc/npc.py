@@ -114,15 +114,13 @@ class NPC(NPCBase):
         # self.get_sick(None, None) # debug for testing sickness
 
     def activate_hat(self):
-        if not self.is_v3:
-            self.has_hat = True
+        self.has_hat = True
 
     def deactivate_hat(self):
         self.has_hat = False
 
     def activate_necklace(self):
-        if not self.is_v3:
-            self.has_necklace = True
+        self.has_necklace = True
 
     def deactivate_necklace(self):
         self.has_necklace = False
