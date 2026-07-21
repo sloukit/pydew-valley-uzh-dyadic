@@ -11,7 +11,7 @@ from src.enums import (
     FarmingTool,
     InventoryResource,
     ItemToUse,
-    Layer,
+    Layer, Color,
 )
 from src.fblitter import FBLITTER
 from src.sprites.entities.entity import Entity
@@ -37,6 +37,8 @@ class Character(Entity, ABC):
         apply_tool: Callable[[FarmingTool, tuple[float, float], Self], None],
         plant_collision: Callable[[Self], None],
         z=Layer.MAIN,
+        hat: Color | None = None,
+        necklace: Color | None = None,
     ):
         Entity.__init__(
             self,
@@ -106,6 +108,9 @@ class Character(Entity, ABC):
         # so those that can't should not have money either
         self.money = 0
 
+        self.hat = hat
+        self.necklace = necklace
+
     def get_state(self):
         if self.tool_active:
             self.state = EntityState(self.current_tool.as_serialised_string())
@@ -155,8 +160,8 @@ class Character(Entity, ABC):
 
         if is_in_ingroup:
             super().draw(display_surface, rect, camera)
-            if self.has_necklace:
-                necklace_state = EntityState(f"necklace_{self.state.value}")
+            if self.necklace:
+                necklace_state = f"necklace_{self.state.value}_{self.necklace}"
                 necklace_ani = self.assets[necklace_state][self.facing_direction]
                 necklace_frame = necklace_ani.get_frame(self.frame_index)
                 necklace_frame.set_alpha(self.image_alpha)
@@ -164,8 +169,8 @@ class Character(Entity, ABC):
 
         # Render the hat/horn (depending on the group)
         if is_in_ingroup:
-            if self.has_hat:
-                hat_state = EntityState(f"hat_{self.state.value}")
+            if self.hat:
+                hat_state = f"hat_{self.state.value}_{self.hat}"
                 hat_ani = self.assets[hat_state][self.facing_direction]
                 hat_frame = hat_ani.get_frame(self.frame_index)
                 # hat_frame.set_alpha(self.image_alpha)  # hat is always visible, looks silly otherwise

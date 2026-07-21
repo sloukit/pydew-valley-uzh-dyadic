@@ -9,7 +9,7 @@ from src.enums import (
     FarmingTool,
     InventoryResource,
     Layer,
-    SeedType,
+    SeedType, Color,
 )
 from src.gui.interface.emotes import NPCEmoteManager
 from src.npc.bases.npc_base import NPCBase
@@ -34,11 +34,11 @@ class NPC(NPCBase):
         soil_manager: SoilManager,
         emote_manager: NPCEmoteManager,
         tree_sprites: pygame.sprite.Group,
-        has_hat: bool,
-        has_necklace: bool,
         special_features: str | None,
         npc_id: int = 0,
         is_v3: bool = False,
+        hat: Color | None = None,
+        necklace: Color | None = None,
     ):
         self.tree_sprites = tree_sprites
 
@@ -53,16 +53,12 @@ class NPC(NPCBase):
             z=Layer.MAIN,
             emote_manager=emote_manager,
             npc_id=npc_id,
+            hat=hat,
+            necklace=necklace,
         )
         self.is_v3 = is_v3
         self.start_tile_pos = self.get_tile_pos()  # capture the NPC start position
         self.soil_area = soil_manager.area
-        self.has_necklace = False
-        self.has_hat = False
-        if has_hat:
-            self.activate_hat()
-        if has_necklace:
-            self.activate_necklace()
 
         self.special_features = special_features
         self.has_horn = False

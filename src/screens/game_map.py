@@ -20,7 +20,7 @@ from src.enums import (
     InventoryResource,
     Layer,
     Map,
-    SpecialObjectLayer,
+    SpecialObjectLayer, Color,
 )
 from src.exceptions import GameMapWarning, InvalidMapError
 from src.groups import AllSprites, PersistentSpriteGroup
@@ -689,20 +689,27 @@ class GameMap:
         ):
             return None
 
-        features = obj.properties.get("features")
-        has_hat = False
-        has_necklace = False
-        if features:
-            if "hat" in features:
-                has_hat = True
-            if "necklace" in features:
-                has_necklace = True
-
         npc_id = obj.properties.get("npc_id")
         if npc_id is None:
             raise InvalidMapError(
                 "At least one NPC was not given an ID on the current map."
             )
+
+        features = obj.properties.get("features")
+        hat = None
+        necklace = None
+
+        if features:
+            parts = features.split("_")
+
+            if len(parts) % 2 == 1:
+                raise InvalidMapError(f"NPC {npc_id} has incomplete features: {features}")
+
+            for i in range(0, len(parts), 2):
+                if parts[i] == "necklace":
+                    necklace = Color(parts[i+1])
+                if parts[i] == "hat":
+                    hat = Color(parts[i+1])
 
         is_dyad_main: bool = obj.properties.get("is_dyad_main")
         partner_id: int = obj.properties.get("partner_id")
@@ -717,13 +724,13 @@ class GameMap:
             soil_manager=self.soil_manager,
             emote_manager=self.npc_emote_manager,
             tree_sprites=self.tree_sprites,
-            has_hat=has_hat,
-            has_necklace=has_necklace,
             special_features=features,
             is_dyad_main=is_dyad_main,
             partner_id=partner_id,
             npc_id=npc_id,
             is_v3=self.get_game_version() == 3,
+            hat=hat,
+            necklace=necklace,
         )
         npc.teleport(pos)
         self._reference_npc_in_mgr(npc_id, npc)
@@ -732,8 +739,8 @@ class GameMap:
         no_walking_npc = (
             (
                 gmap != Map.FARM
-                and not npc.has_necklace
-                and npc.has_hat
+                #and not npc.has_necklace
+                #and npc.has_hat
                 and gmap != Map.MINIGAME
             )
             or gmap == Map.MINIGAME
@@ -1032,6 +1039,10 @@ class GameMap:
         for npc in self.npcs:
             if npc.partner_id == -1:
                 npc.partner = self.player
+                # Copy the player's partner's accessories to the player.
+                # This is done because the player object is not configured in farm_new.tmx
+                self.player.hat = npc.hat
+                self.player.necklace = npc.necklace
             else:
                 npc.partner = npc_dict[npc.partner_id]
 

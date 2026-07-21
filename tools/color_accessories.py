@@ -18,17 +18,13 @@ class Palette:
 BASE = Palette("base", (154, 75, 152, 255), (233, 156, 177, 255))
 
 PALETTES = [
-    Palette("green", (26, 100, 0, 255), (34, 169, 0, 255))
+    Palette("green", (26, 100, 0, 255), (34, 169, 0, 255)),
+    Palette("lightblue", (50, 129, 255, 255), (71, 209, 255, 255)),
+    Palette("red", (255, 0, 22, 255), (255, 66, 43, 255)),
 ]
 
-PALETTE_NAMES = [p.name for p in PALETTES]
-
 def is_base_image(path: Path):
-    for palette in PALETTE_NAMES:
-        if path.stem.endswith(palette):
-            return False
-
-    return True
+    return path.stem.endswith("_base")
 
 def color_distance(p1, p2):
     r1, g1, b1, _ = p1
@@ -97,7 +93,7 @@ def add_colors(base: Path, palette: Palette, recolor: Callable[[Any, int, int, P
 
     recolor(pixels, width, height, palette, mask)
 
-    destination = base.parent / f"{base.stem}_{palette.name}.png"
+    destination = base.parent / f"{base.stem.replace("_base", "")}_{palette.name}.png"
     img.save(destination)
 
 def main():

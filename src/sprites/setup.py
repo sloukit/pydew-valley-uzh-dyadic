@@ -27,16 +27,16 @@ class _AniFrames:
 
 # type EntityAsset = dict[EntityState, dict[Direction, _AniFrames]]
 type EntityAsset = WeakValueDictionary[
-    EntityState, WeakValueDictionary[Direction, _AniFrames]
+    str, WeakValueDictionary[Direction, _AniFrames]
 ]
 
 
 class _Hitbox:
     default: pygame.Rect
 
-    _state_exceptions: dict[EntityState, pygame.Rect]
+    _state_exceptions: dict[str, pygame.Rect]
     _direction_exceptions: dict[Direction, pygame.Rect]
-    _exceptions: dict[tuple[EntityState, Direction], pygame.Rect]
+    _exceptions: dict[tuple[str, Direction], pygame.Rect]
 
     def __init__(self, default: pygame.Rect):
         """
@@ -65,7 +65,7 @@ class _Hitbox:
         """
         self._direction_exceptions[direction] = rect
 
-    def set_state_exception(self, state: EntityState, rect: pygame.Rect) -> None:
+    def set_state_exception(self, state: str, rect: pygame.Rect) -> None:
         """
         Tell the class, in which state a hitbox should be used that differs
         from the default one.
@@ -73,7 +73,7 @@ class _Hitbox:
         self._state_exceptions[state] = rect
 
     def set_exception(
-        self, state: EntityState, direction: Direction, rect: pygame.Rect
+        self, state: str, direction: Direction, rect: pygame.Rect
     ) -> None:
         """
         Tell the class, in which state a hitbox should be used that differs
@@ -84,7 +84,7 @@ class _Hitbox:
         """
         self._exceptions[(state, direction)] = rect
 
-    def get_hitbox(self, state: EntityState, direction: Direction) -> pygame.Rect:
+    def get_hitbox(self, state: str, direction: Direction) -> pygame.Rect:
         state_exception = self._state_exceptions.get(state)
         direction_exception = self._direction_exceptions.get(direction)
         exception = self._exceptions.get((state, direction))
@@ -115,7 +115,7 @@ class _Hitbox:
 def state_importer(
     path: str,
     size: int,
-    state: EntityState,
+    state: str,
     directions: list[Direction],
     hitbox: _Hitbox,
 ) -> dict[Direction, _AniFrames]:
@@ -155,12 +155,12 @@ def state_importer(
 
 def entity_importer(
     path: str, size: int, directions: list[Direction], hitbox: _Hitbox
-) -> dict[EntityState, dict[Direction, _AniFrames]]:
+) -> dict[str, dict[Direction, _AniFrames]]:
     hitbox.scale_hitboxes(SCALE_FACTOR)
     states = {}
     for folder_path, _sub_folders, file_names in os.walk(path):
         for file_name in file_names:
-            current_state = EntityState(file_name.split(".")[0])
+            current_state = file_name.split(".")[0]
             states[current_state] = state_importer(
                 path=os.path.join(folder_path, file_name),
                 size=size,

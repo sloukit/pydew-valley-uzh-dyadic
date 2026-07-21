@@ -8,7 +8,7 @@ import pygame
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
-from src.enums import FarmingTool
+from src.enums import FarmingTool, Color
 from src.gui.interface.emotes import NPCEmoteManager
 from src.npc.bases.ai_behaviour import AIBehaviour
 from src.npc.behaviour.ai_behaviour_tree_base import ContextType
@@ -38,6 +38,8 @@ class NPCBase(Character, AIBehaviour, ABC):
         z: int,
         emote_manager: NPCEmoteManager,
         npc_id: int = 0,
+        hat: Color | None = None,
+        necklace: Color | None = None,
     ):
         Character.__init__(
             self,
@@ -48,6 +50,8 @@ class NPCBase(Character, AIBehaviour, ABC):
             apply_tool=apply_tool,
             plant_collision=plant_collision,
             z=z,
+            hat=hat,
+            necklace=necklace,
         )
         AIBehaviour.__init__(self, behaviour_tree_context=behaviour_tree_context)
         self.emote_manager = emote_manager

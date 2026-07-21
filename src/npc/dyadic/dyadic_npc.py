@@ -5,7 +5,7 @@ from typing import Callable
 import numpy as np
 import pygame
 
-from src.enums import FarmingTool, SeedType
+from src.enums import FarmingTool, SeedType, Color
 from src.gui.interface import NPCEmoteManager
 from src.npc.behaviour.ai_behaviour_tree_base import Context
 from src.npc.npc import NPC
@@ -22,15 +22,20 @@ class DyadicNPC(NPC):
                  collision_sprites: pygame.sprite.Group,
                  apply_tool: Callable[[FarmingTool, tuple[float, float], Character], None],
                  plant_collision: Callable[[Character], None], soil_manager: SoilManager,
-                 emote_manager: NPCEmoteManager, tree_sprites: pygame.sprite.Group, has_hat: bool, has_necklace: bool,
+                 emote_manager: NPCEmoteManager, tree_sprites: pygame.sprite.Group,
                  special_features: str | None,
                  is_dyad_main: bool,
                  partner_id: int,
-                 npc_id: int = 0, is_v3: bool = False):
+                 npc_id: int = 0,
+                 is_v3: bool = False,
+                 hat: Color | None = None,
+                 necklace: Color | None = None,
+                 ):
         super().__init__(pos, assets, groups, collision_sprites, apply_tool, plant_collision, soil_manager,
-                         emote_manager, tree_sprites, has_hat, has_necklace, special_features, npc_id, is_v3)
+                         emote_manager, tree_sprites, special_features, npc_id, is_v3, hat, necklace)
         self.is_dyad_main = is_dyad_main
         self.partner_id = partner_id
+
 
 
     def follow_partner(self):

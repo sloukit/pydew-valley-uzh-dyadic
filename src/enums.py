@@ -487,6 +487,13 @@ class EntityState(StrEnum):
     NECKLACE_WATER = "necklace_water"
 
 
+class Color(StrEnum):
+    BASE = "base"
+    GREEN = "green"
+    LIGHTBLUE = "lightblue"
+    RED = "red"
+
+
 # TODO: Refactor AIState usages to use EntityState
 class AIState(IntEnum):
     IDLE = 0
