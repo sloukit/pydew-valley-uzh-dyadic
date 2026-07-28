@@ -1046,5 +1046,3 @@ class GameMap:
             else:
                 npc.partner = npc_dict[npc.partner_id]
 
-        xplat.log("set up dyadic npcs")
-

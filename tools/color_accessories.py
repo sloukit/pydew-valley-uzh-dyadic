@@ -5,22 +5,28 @@ from typing import Callable, Any
 from PIL import Image
 import colorsys
 
+from src.enums import Color
+
 HAT_HOE_KEEP = Image.open("images/characters/rabbit/hat_hoe_keep.png").load()
 HAT_WATER_KEEP = Image.open("images/characters/rabbit/hat_water_keep.png").load()
 
 @dataclass
 class Palette:
-    name: str
+    name: Color
     dark: tuple[int, int, int, int]
     light: tuple[int, int, int, int]
 
 
-BASE = Palette("base", (154, 75, 152, 255), (233, 156, 177, 255))
+BASE = Palette(Color.BASE, (154, 75, 152, 255), (233, 156, 177, 255))
 
 PALETTES = [
-    Palette("green", (26, 100, 0, 255), (34, 169, 0, 255)),
-    Palette("lightblue", (50, 129, 255, 255), (71, 209, 255, 255)),
-    Palette("red", (255, 0, 22, 255), (255, 66, 43, 255)),
+    Palette(Color.GREEN, (26, 100, 0, 255), (34, 169, 0, 255)),
+    Palette(Color.LIGHTBLUE, (50, 129, 255, 255), (71, 209, 255, 255)),
+    Palette(Color.RED, (255, 0, 22, 255), (255, 66, 43, 255)),
+    Palette(Color.YELLOW, (255, 209, 0, 255), (255, 230, 53, 255)),
+    Palette(Color.PURPLE, (186, 0, 255, 255), (229, 52, 255, 255)),
+    Palette(Color.BROWN, (75, 34, 0, 255), (117, 53, 0, 255)),
+    Palette(Color.ORANGE, (214, 95, 0, 255), (255, 133, 0, 255)),
 ]
 
 def is_base_image(path: Path):

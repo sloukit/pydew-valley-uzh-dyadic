@@ -780,7 +780,7 @@
     <property name="label" value="to_forest_down"/>
    </properties>
   </object>
-  <object id="380" name="Outgroup Farm" x="693.969" y="118.484" width="415.471" height="358.101"/>
+  <object id="380" name="Outgroup Farm" x="669.302" y="150.484" width="415.471" height="358.101"/>
   <object id="386" name="L_RANGE_BLOCKAGE" x="428.8" y="261" width="56" height="7.5"/>
   <object id="387" name="L_BARN_BLOCKAGE" x="463.957" y="186" width="32" height="5.93478"/>
   <object id="388" name="R_RANGE_BLOCKAGE" x="779.364" y="260.795" width="56.9375" height="6.5"/>
@@ -1007,7 +1007,7 @@
  <objectgroup id="25" name="NPCs">
   <object id="368" gid="828" x="390" y="448" width="20" height="21">
    <properties>
-    <property name="features" value="necklace_green"/>
+    <property name="features" value="necklace_yellow"/>
     <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="11"/>
     <property name="partner_id" type="int" value="4"/>
@@ -1015,7 +1015,7 @@
   </object>
   <object id="369" gid="828" x="374.597" y="368.618" width="20" height="21">
    <properties>
-    <property name="features" value="necklace_red"/>
+    <property name="features" value="hat_lightblue"/>
     <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="1"/>
     <property name="partner_id" type="int" value="0"/>
@@ -1023,7 +1023,7 @@
   </object>
   <object id="370" gid="828" x="406" y="368" width="20" height="21">
    <properties>
-    <property name="features" value="necklace_lightblue"/>
+    <property name="features" value="necklace_base"/>
     <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="2"/>
     <property name="partner_id" type="int" value="3"/>
@@ -1039,7 +1039,7 @@
   </object>
   <object id="372" gid="828" x="502" y="351" width="20" height="21">
    <properties>
-    <property name="features" value="necklace_green"/>
+    <property name="features" value="necklace_yellow"/>
     <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="4"/>
     <property name="partner_id" type="int" value="11"/>
@@ -1047,6 +1047,7 @@
   </object>
   <object id="373" gid="830" x="817.424" y="415.696" width="18" height="17">
    <properties>
+    <property name="features" value="necklace_orange"/>
     <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="19"/>
     <property name="partner_id" type="int" value="23"/>
@@ -1054,6 +1055,7 @@
   </object>
   <object id="374" gid="830" x="862.572" y="421.858" width="18" height="17">
    <properties>
+    <property name="features" value="necklace_orange"/>
     <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="23"/>
     <property name="partner_id" type="int" value="19"/>
@@ -1061,6 +1063,7 @@
   </object>
   <object id="375" gid="830" x="871" y="400" width="18" height="17">
    <properties>
+    <property name="features" value="hat_red"/>
     <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="21"/>
     <property name="partner_id" type="int" value="22"/>
@@ -1068,6 +1071,7 @@
   </object>
   <object id="376" gid="830" x="894.798" y="410.724" width="18" height="17">
    <properties>
+    <property name="features" value="hat_red"/>
     <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="22"/>
     <property name="partner_id" type="int" value="21"/>
@@ -1075,6 +1079,7 @@
   </object>
   <object id="377" gid="830" x="893.693" y="371.948" width="18" height="17">
    <properties>
+    <property name="features" value="necklace_brown"/>
     <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="16"/>
     <property name="partner_id" type="int" value="15"/>
@@ -1082,7 +1087,7 @@
   </object>
   <object id="415" gid="828" x="435.764" y="355.1" width="20" height="21">
    <properties>
-    <property name="features" value="necklace_lightblue"/>
+    <property name="features" value="necklace_base"/>
     <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="3"/>
     <property name="partner_id" type="int" value="2"/>
@@ -1090,7 +1095,7 @@
   </object>
   <object id="416" gid="828" x="424.659" y="379.603" width="20" height="21">
    <properties>
-    <property name="features" value="hat_base"/>
+    <property name="features" value="necklace_purple"/>
     <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="6"/>
     <property name="partner_id" type="int" value="5"/>
@@ -1106,7 +1111,7 @@
   </object>
   <object id="420" gid="828" x="354.568" y="383.566" width="20" height="21">
    <properties>
-    <property name="features" value="hat_base"/>
+    <property name="features" value="necklace_purple"/>
     <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="5"/>
     <property name="partner_id" type="int" value="6"/>
@@ -1114,7 +1119,7 @@
   </object>
   <object id="422" gid="828" x="417.286" y="407.389" width="20" height="21">
    <properties>
-    <property name="features" value="hat_lightblue_necklace_green"/>
+    <property name="features" value="hat_brown"/>
     <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="10"/>
     <property name="partner_id" type="int" value="9"/>
@@ -1122,6 +1127,7 @@
   </object>
   <object id="423" gid="830" x="837.473" y="354.042" width="18" height="17">
    <properties>
+    <property name="features" value="hat_purple"/>
     <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="12"/>
     <property name="partner_id" type="int" value="13"/>
@@ -1129,6 +1135,7 @@
   </object>
   <object id="424" gid="830" x="783.212" y="389.184" width="18" height="17">
    <properties>
+    <property name="features" value="necklace_lightblue"/>
     <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="17"/>
     <property name="partner_id" type="int" value="18"/>
@@ -1136,6 +1143,7 @@
   </object>
   <object id="425" gid="830" x="800.483" y="368.914" width="18" height="17">
    <properties>
+    <property name="features" value="hat_purple"/>
     <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="13"/>
     <property name="partner_id" type="int" value="12"/>
@@ -1143,6 +1151,7 @@
   </object>
   <object id="426" gid="830" x="809.966" y="393.052" width="18" height="17">
    <properties>
+    <property name="features" value="necklace_lightblue"/>
     <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="18"/>
     <property name="partner_id" type="int" value="17"/>
@@ -1150,6 +1159,7 @@
   </object>
   <object id="427" gid="830" x="831.086" y="378.397" width="18" height="17">
    <properties>
+    <property name="features" value="necklace_green"/>
     <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="14"/>
     <property name="partner_id" type="int" value="20"/>
@@ -1157,6 +1167,7 @@
   </object>
   <object id="428" gid="830" x="846.172" y="403.828" width="18" height="17">
    <properties>
+    <property name="features" value="necklace_green"/>
     <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="20"/>
     <property name="partner_id" type="int" value="14"/>
@@ -1164,6 +1175,7 @@
   </object>
   <object id="429" gid="830" x="863.845" y="374.517" width="18" height="17">
    <properties>
+    <property name="features" value="necklace_brown"/>
     <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="15"/>
     <property name="partner_id" type="int" value="16"/>
@@ -1171,7 +1183,7 @@
   </object>
   <object id="432" gid="828" x="394.872" y="395.522" width="20" height="21">
    <properties>
-    <property name="features" value="hat_lightblue_necklace_green"/>
+    <property name="features" value="hat_brown"/>
     <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="9"/>
     <property name="partner_id" type="int" value="10"/>
@@ -1179,7 +1191,7 @@
   </object>
   <object id="433" gid="828" x="389.708" y="352.089" width="20" height="21">
    <properties>
-    <property name="features" value="necklace_red"/>
+    <property name="features" value="hat_lightblue"/>
     <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="0"/>
     <property name="partner_id" type="int" value="1"/>
@@ -1187,7 +1199,7 @@
   </object>
   <object id="442" gid="828" x="644.517" y="517.276" width="20" height="21">
    <properties>
-    <property name="features" value="hat_green_necklace_red"/>
+    <property name="features" value="hat_base_necklace_base"/>
     <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="25"/>
     <property name="partner_id" type="int" value="-1"/>

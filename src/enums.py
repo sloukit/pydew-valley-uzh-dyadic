@@ -492,6 +492,10 @@ class Color(StrEnum):
     GREEN = "green"
     LIGHTBLUE = "lightblue"
     RED = "red"
+    YELLOW = "yellow"
+    PURPLE = "purple"
+    BROWN = "brown"
+    ORANGE = "orange"
 
 
 # TODO: Refactor AIState usages to use EntityState
