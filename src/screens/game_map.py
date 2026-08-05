@@ -736,28 +736,21 @@ class GameMap:
         self._reference_npc_in_mgr(npc_id, npc)
         # Ingroup NPCs wearing only the hat and no necklace should not be able to walk on the forest and town map,
         # only on the farming map
-        no_walking_npc = (
-            (
-                gmap != Map.FARM
-                #and not npc.has_necklace
-                #and npc.has_hat
-                and gmap != Map.MINIGAME
-            )
-            or gmap == Map.MINIGAME
-            and obj.name
-            and obj.name == "opponent"
-        )
+        no_walking_npc = (gmap == Map.MINIGAME and obj.name and obj.name == "opponent")
+
         if gmap == Map.MINIGAME and obj.name and obj.name == "opponent":
                 npc.kill()
 
         cheering = gmap == Map.MINIGAME
 
         behaviour = obj.properties.get("behaviour")
+
+        if not npc.is_dyad_main:
+            npc.conditional_behaviour_tree = NPCBehaviourTree.FOLLOW_PARTNER
+            return npc
+
         if behaviour != "Woodcutting" and gmap == Map.NEW_FARM:
-            if npc.is_dyad_main:
-                npc.conditional_behaviour_tree = NPCBehaviourTree.FARMING
-            else:
-                npc.continuous_behaviour_tree = NPCBehaviourTree.FOLLOW_PARTNER
+            npc.conditional_behaviour_tree = NPCBehaviourTree.FARMING
         elif no_walking_npc:
             npc.conditional_behaviour_tree = NPCBehaviourTree.DO_NOTHING
         elif cheering:
