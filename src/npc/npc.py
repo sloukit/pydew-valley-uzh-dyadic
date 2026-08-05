@@ -64,7 +64,7 @@ class NPC(NPCBase):
         self.has_horn = False
         self.has_outgroup_skin = False
 
-        self.inventory = {
+        self._inventory = {
             InventoryResource.WOOD: 0,
             InventoryResource.APPLE: 0,
             InventoryResource.BLACKBERRY: 0,

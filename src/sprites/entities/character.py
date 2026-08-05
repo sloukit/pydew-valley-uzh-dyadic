@@ -68,7 +68,7 @@ class Character(Entity, ABC):
         self.plant_collision = plant_collision
 
         # inventory
-        self.inventory = {
+        self._inventory = {
             InventoryResource.WOOD: 0,
             InventoryResource.APPLE: 0,
             InventoryResource.BLACKBERRY: 0,
@@ -110,6 +110,14 @@ class Character(Entity, ABC):
 
         self.hat = hat
         self.necklace = necklace
+
+    @property
+    def inventory(self):
+        return self._inventory
+
+    @inventory.setter
+    def inventory(self, inventory):
+        self._inventory = inventory
 
     def get_state(self):
         if self.tool_active:

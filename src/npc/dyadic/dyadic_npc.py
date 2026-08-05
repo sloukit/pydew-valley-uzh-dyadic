@@ -5,6 +5,7 @@ from typing import Callable
 import numpy as np
 import pygame
 
+from src import xplat
 from src.enums import FarmingTool, SeedType, Color
 from src.gui.interface import NPCEmoteManager
 from src.npc.behaviour.ai_behaviour_tree_base import Context
@@ -36,7 +37,19 @@ class DyadicNPC(NPC):
         self.is_dyad_main = is_dyad_main
         self.partner_id = partner_id
 
+    @property
+    def inventory(self):
+        if self.is_dyad_main:
+            return self._inventory
+        else:
+            return self.partner.inventory
 
+    @inventory.setter
+    def inventory(self, value):
+        if self.is_dyad_main:
+            self._inventory = value
+        else:
+            self.partner.inventory = value
 
     def follow_partner(self):
         current = np.asarray(self.get_tile_pos())
