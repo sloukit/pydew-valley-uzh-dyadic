@@ -198,3 +198,5 @@ PLAYER_HP_STR = "player_hp"
 PLAYER_IS_SICK_STR = "player_is_sick"
 PLAYER_IS_BSICK_STR = "player_is_bath_sick"
 PLAYER_HP_STATE_STR = "player_hp_state"
+
+DYAD_MAX_DISTANCE = 5

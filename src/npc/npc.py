@@ -15,7 +15,7 @@ from src.gui.interface.emotes import NPCEmoteManager
 from src.npc.bases.npc_base import NPCBase
 from src.npc.behaviour.context import NPCIndividualContext, NPCSharedContext
 from src.overlay.soil import SoilManager
-from src.settings import RECOVERY_INTERVAL, Coordinate
+from src.settings import RECOVERY_INTERVAL, Coordinate, DYAD_MAX_DISTANCE
 from src.sprites.entities.character import Character
 from src.sprites.entities.sick_color_effect import apply_sick_color_effect
 from src.sprites.setup import EntityAsset
@@ -157,13 +157,17 @@ class NPC(NPCBase):
             tiles = self.soil_area.unwatered_tiles
         else:
             raise ValueError("Invalid tile type")
-        # include only tiles that are in the same row as the NPC's start position
-        return [
-            # 1 is the y-coordinate of tile position to pick the row
-            tile
-            for tile in tiles
-            if tile[1] == self.start_tile_pos[1]
-        ]
+        # return tiles in a given square around the npc
+        radius = DYAD_MAX_DISTANCE
+        center_x, center_y = self.get_tile_pos()
+        result = []
+
+        for x in range(center_x - radius, center_x + radius + 1):
+            for y in range(center_y - radius, center_y + radius + 1):
+                if (x, y) in tiles:
+                    result.append((x, y))
+
+        return result
 
     def get_personal_adjacent_untilled_tiles(self) -> list[tuple[int, int]]:
         """

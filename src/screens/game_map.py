@@ -746,7 +746,10 @@ class GameMap:
         behaviour = obj.properties.get("behaviour")
 
         if not npc.is_dyad_main:
-            npc.conditional_behaviour_tree = NPCBehaviourTree.FOLLOW_PARTNER
+            if gmap == Map.NEW_FARM:
+                npc.conditional_behaviour_tree = NPCBehaviourTree.FARMING_DYADIC
+            else:
+                npc.conditional_behaviour_tree = NPCBehaviourTree.FOLLOW_PARTNER
             return npc
 
         if behaviour != "Woodcutting" and gmap == Map.NEW_FARM:
