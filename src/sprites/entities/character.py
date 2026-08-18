@@ -28,6 +28,9 @@ class Character(Entity, ABC):
 
     current_seed: FarmingTool
 
+    is_dyad_main: bool
+    partner: Self | None = None
+
     def __init__(
         self,
         pos: settings.Coordinate,
@@ -36,6 +39,7 @@ class Character(Entity, ABC):
         collision_sprites: pygame.sprite.Group,
         apply_tool: Callable[[FarmingTool, tuple[float, float], Self], None],
         plant_collision: Callable[[Self], None],
+        is_dyad_main: bool,
         z=Layer.MAIN,
         hat: Color | None = None,
         necklace: Color | None = None,
@@ -48,6 +52,8 @@ class Character(Entity, ABC):
             collision_sprites=collision_sprites,
             z=z,
         )
+
+        self.is_dyad_main = is_dyad_main
 
         # TODO: implement compatibility with this, e.g. NPCs reacting differently to
         #  emotes depending on the group they belong to and the player's

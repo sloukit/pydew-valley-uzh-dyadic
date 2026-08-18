@@ -36,6 +36,7 @@ from src.gui.interface.dialog import DialogueManager
 from src.gui.interface.emotes import NPCEmoteManager, PlayerEmoteManager
 from src.gui.scene_animation import SceneAnimation
 from src.npc.behaviour.context import NPCSharedContext
+from src.npc.dyadic.dyadic_npc import DyadicNPC
 from src.npc.npc import NPC
 from src.npc.setup import AIData
 from src.npc_sickness_mgr import NPCSicknessManager
@@ -424,6 +425,11 @@ class Level:
 
         self.player.teleport(player_spawn)
 
+        # teleport player's partner next to them if not in cow-herding minigame
+        if game_map != Map.MINIGAME:
+            x, y = player_spawn
+            self.player.partner.teleport((x + 1 * SCALED_TILE_SIZE, y))
+
         if self.cutscene_animation.has_animation_name(DEFAULT_ANIMATION_NAME):
             def_animation_targets = self.cutscene_animation.animations[
                 DEFAULT_ANIMATION_NAME
@@ -563,6 +569,9 @@ class Level:
                     if isinstance(character, Player):
                         self.hit_tree = True
                         tool_use_for_statistics = tool.name
+
+                    if isinstance(character.partner, DyadicNPC) and character.is_dyad_main:
+                        character.partner.target_tree = tree
 
                     self._play_playeronly_sound("axe", character)
             case FarmingTool.HOE:

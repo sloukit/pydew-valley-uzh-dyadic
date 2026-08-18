@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="70" height="55" tilewidth="16" tileheight="16" infinite="0" nextlayerid="27" nextobjectid="631">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="70" height="55" tilewidth="16" tileheight="16" infinite="0" nextlayerid="27" nextobjectid="632">
  <tileset firstgid="1" source="../tilesets/grass_tileset.tsx"/>
  <tileset firstgid="78" source="../tilesets/fence_tileset.tsx"/>
  <tileset firstgid="94" source="../tilesets/Stone_Path.tsx"/>
@@ -1352,6 +1352,15 @@
     <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="3"/>
     <property name="partner_id" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="631" gid="963" x="601.333" y="94" width="20" height="21">
+   <properties>
+    <property name="features" value="hat_base_necklace_base"/>
+    <property name="group" value="INGROUP"/>
+    <property name="is_dyad_main" type="bool" value="false"/>
+    <property name="npc_id" type="int" value="25"/>
+    <property name="partner_id" type="int" value="-1"/>
    </properties>
   </object>
   <object id="591" gid="963" x="324" y="467" width="20" height="21">

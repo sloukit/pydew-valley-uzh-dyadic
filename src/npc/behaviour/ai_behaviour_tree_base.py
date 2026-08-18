@@ -5,6 +5,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Callable, TypeVar
 
+from src import xplat
+
 
 @dataclass
 class Context:
@@ -141,7 +143,11 @@ class Condition(Leaf):
         self.condition_func = condition_func
 
     def run(self, context: ContextType | None):
-        return self.condition_func(context)
+        # TODO remove logging
+        result = self.condition_func(context)
+        if hasattr(context, "npc") and context.npc.partner_id == -1:
+            xplat.log(f"{self.condition_func.__name__}: {result}")
+        return result
 
 
 class Action(Leaf):
@@ -155,4 +161,8 @@ class Action(Leaf):
         self.action_func = action_func
 
     def run(self, context: ContextType | None):
-        return self.action_func(context)
+        # TODO remove logging
+        result =  self.action_func(context)
+        if hasattr(context, "npc") and context.npc.partner_id == -1:
+            xplat.log(f"{self.action_func.__name__}: {result}")
+        return result

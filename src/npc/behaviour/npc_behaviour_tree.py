@@ -601,7 +601,6 @@ def chop_tree(context: NPCIndividualContext) -> bool:
             if tree.alive and not context.npc.is_sick:
                 context.npc.tool_active = True
                 context.npc.current_tool = FarmingTool.AXE
-                context.npc.tool_index = context.npc.current_tool.value - 1
                 context.npc.frame_index = 0
 
             context.npc.direction.update(direction_to_vector(direction_, invert=True))
@@ -678,34 +677,90 @@ def cheer(context: NPCIndividualContext) -> bool:
 def is_away_from_partner(context: DyadicNPCContext) -> bool:
     npc = context.npc
 
-    if npc.pf_path:
-        return False
+    current = npc.get_tile_pos()
+    partner = npc.partner.get_tile_pos()
 
-    current = np.asarray(npc.get_tile_pos())
-    partner = np.asarray(npc.partner.get_tile_pos())
-    direction = partner - current
-    length = np.linalg.norm(direction)
-
-    return length > DYAD_MAX_DISTANCE
+    return distance(current, partner) > DYAD_MAX_DISTANCE
 
 def follow_partner(context: DyadicNPCContext) -> bool:
-    if context.npc.pf_path:
-        return False
+    # if context.npc.pf_path:
+    #     return False
 
     # @context.npc.on_path_completion
     # def _():
     #     if hasattr(context.npc, "partner_id") and context.npc.partner_id == -1:
     #         xplat.log("completed path")
 
-    context.npc.follow_partner()
+    return context.npc.follow_partner()
+
+def update_target_tree(context: DyadicNPCContext) -> bool:
+    npc = context.npc
+
+    if npc.target_tree is not None and npc.target_tree.health < 0:
+        npc.target_tree = None
+
     return True
 
+def has_target_tree(context: DyadicNPCContext) -> bool:
+    return context.npc.target_tree is not None
+
+def chop_target_tree(context: DyadicNPCContext) -> bool:
+    npc = context.npc
+    tree = npc.target_tree
+
+    def on_path_completion(direction: Direction):
+        def inner():
+            if tree.alive and not context.npc.is_sick:
+                npc.tool_active = True
+                npc.current_tool = FarmingTool.AXE
+                npc.frame_index = 0
+
+            npc.direction.update(direction_to_vector(direction, invert=True))
+            npc.get_facing_direction()
+            npc.direction.update((0, 0))
+            npc.target_tree = None
+
+        return inner
+
+    directions = [Direction.RIGHT, Direction.LEFT]
+
+    for direction in directions:
+        tree_pos = (
+            int(tree.hitbox_rect.center[0] / SCALED_TILE_SIZE),
+            int(tree.hitbox_rect.center[1] / SCALED_TILE_SIZE),
+        )
+        tup = direction_to_vector(direction)
+        target_position = (tree_pos[0] + tup[0], tree_pos[1] + tup[1])
+        tree_edge_coord = offset_edge_midpoint(
+            direction, tree.hitbox_rect, npc.hitbox_rect.size
+        )
+
+        d = distance(npc.hitbox_rect.center, tree_edge_coord)
+
+        if d / SCALED_TILE_SIZE < 1:
+            on_path_completion(direction)()
+            return True
+
+        path_created = walk_to_pos(
+            context,
+            target_position,
+            on_path_completion=on_path_completion(direction),
+        )
+
+        if path_created:
+            npc.create_step_to_coord(tree_edge_coord)
+            return True
+
+    return False
 
 # region behaviour trees
 class NPCBehaviourTree(NodeWrapper, Enum):
-    FOLLOW_PARTNER = Sequence(
-        Condition(is_away_from_partner),
-        Action(follow_partner)
+    FOLLOW_PARTNER = Selector(
+        Sequence(
+            Condition(is_away_from_partner),
+            Action(follow_partner)
+        ),
+        Action(wander)
     )
     FARMING_DYADIC = Selector(
         Sequence(
@@ -751,6 +806,18 @@ class NPCBehaviourTree(NodeWrapper, Enum):
     WOODCUTTING = Selector(
         Sequence(Condition(will_cut_wood), Selector(Action(chop_tree))),
         Action(wander),
+    )
+
+    WOODCUTTING_DYADIC = Sequence(
+        Action(update_target_tree),
+        Selector(
+            Sequence(Condition(has_target_tree), Action(chop_target_tree)),
+            Sequence(
+                Condition(is_away_from_partner),
+                Action(follow_partner),
+            ),
+            Action(do_nothing)
+        )
     )
 
     DO_NOTHING = Selector(

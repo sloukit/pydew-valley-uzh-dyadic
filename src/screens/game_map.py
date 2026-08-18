@@ -537,6 +537,19 @@ class GameMap:
                 self.collision_sprites,
             )
 
+        if SETUP_PATHFINDING:
+            pf_add_matrix_collision(
+                self._pf_matrix,
+                (
+                    obj.x + object_type.hitbox.x / SCALE_FACTOR,
+                    obj.y + object_type.hitbox.y / SCALE_FACTOR,
+                ),
+                (
+                    object_type.hitbox.width / SCALE_FACTOR,
+                    object_type.hitbox.height / SCALE_FACTOR,
+                ),
+            )
+
     def _setup_bush(
         self, pos: tuple[int, int], obj: TiledObject, object_type: MapObjectType
     ):
@@ -566,9 +579,22 @@ class GameMap:
             bush.image = self.frames["level"]["objects"]["bush_medium"]
             bush.surf = bush.image
         else:
-            CollideableMapObject(pos, object_type, z=Layer.MAIN).add(
+            CollideableMapObject(pos, object_type, z=Layer.GROUND_OBJECTS).add(
                 self.all_sprites,
                 self.collision_sprites,
+            )
+
+        if SETUP_PATHFINDING:
+            pf_add_matrix_collision(
+                self._pf_matrix,
+                (
+                    obj.x + object_type.hitbox.x / SCALE_FACTOR,
+                    obj.y + object_type.hitbox.y / SCALE_FACTOR,
+                ),
+                (
+                    object_type.hitbox.width / SCALE_FACTOR,
+                    object_type.hitbox.height / SCALE_FACTOR,
+                ),
             )
 
     def _setup_map_object(
@@ -607,21 +633,9 @@ class GameMap:
                 if object_type.hitbox is not None:
                     CollideableMapObject(pos, object_type, z=layer, name=name).add(
                         self.all_sprites,
-                        self.collision_sprites,
+                        # self.collision_sprites,
                     )
 
-            if SETUP_PATHFINDING:
-                pf_add_matrix_collision(
-                    self._pf_matrix,
-                    (
-                        obj.x + object_type.hitbox.x / SCALE_FACTOR,
-                        obj.y + object_type.hitbox.y / SCALE_FACTOR,
-                    ),
-                    (
-                        object_type.hitbox.width / SCALE_FACTOR,
-                        object_type.hitbox.height / SCALE_FACTOR,
-                    ),
-                )
         else:
             surf = pygame.transform.scale_by(object_type.image, SCALE_FACTOR)
             Sprite(pos, surf, z=layer).add(self.all_sprites)
@@ -748,6 +762,8 @@ class GameMap:
         if not npc.is_dyad_main:
             if gmap == Map.NEW_FARM:
                 npc.conditional_behaviour_tree = NPCBehaviourTree.FARMING_DYADIC
+            elif gmap == Map.FOREST:
+                npc.conditional_behaviour_tree = NPCBehaviourTree.WOODCUTTING_DYADIC
             else:
                 npc.conditional_behaviour_tree = NPCBehaviourTree.FOLLOW_PARTNER
             return npc
@@ -1035,6 +1051,7 @@ class GameMap:
         for npc in self.npcs:
             if npc.partner_id == -1:
                 npc.partner = self.player
+                self.player.partner = npc
                 # Copy the player's partner's accessories to the player.
                 # This is done because the player object is not configured in farm_new.tmx
                 self.player.hat = npc.hat

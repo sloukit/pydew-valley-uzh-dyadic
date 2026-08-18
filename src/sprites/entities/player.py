@@ -95,6 +95,7 @@ class Player(Character):
             collision_sprites=collision_sprites,
             apply_tool=apply_tool,
             plant_collision=plant_collision,
+            is_dyad_main=True
         )
 
         self.is_sick = False
@@ -110,7 +111,7 @@ class Player(Character):
         self.save_file = save_file
         self.controls = controls
         self.load_controls()
-        self.original_speed = 250 * 4
+        self.original_speed = 250
         self.speed = self.original_speed
         self.blocked = False
         self.paused = False

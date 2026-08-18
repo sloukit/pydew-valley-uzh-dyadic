@@ -6,18 +6,20 @@ import numpy as np
 import pygame
 
 from src import xplat
-from src.enums import FarmingTool, SeedType, Color
+from src.enums import FarmingTool, SeedType, Color, Direction
 from src.gui.interface import NPCEmoteManager
 from src.npc.behaviour.ai_behaviour_tree_base import Context
 from src.npc.npc import NPC
 from src.overlay.soil import SoilManager
 from src.settings import Coordinate
 from src.sprites.entities.character import Character
+from src.sprites.objects.tree import Tree
 from src.sprites.setup import EntityAsset
 
 
 class DyadicNPC(NPC):
-    partner: Character | None = None
+
+    target_tree: Tree | None = None
 
     def __init__(self, pos: Coordinate, assets: EntityAsset, groups: tuple[pygame.sprite.Group, ...],
                  collision_sprites: pygame.sprite.Group,
@@ -33,8 +35,7 @@ class DyadicNPC(NPC):
                  necklace: Color | None = None,
                  ):
         super().__init__(pos, assets, groups, collision_sprites, apply_tool, plant_collision, soil_manager,
-                         emote_manager, tree_sprites, special_features, npc_id, is_v3, hat, necklace)
-        self.is_dyad_main = is_dyad_main
+                         emote_manager, tree_sprites, special_features, is_dyad_main, npc_id, is_v3, hat, necklace)
         self.partner_id = partner_id
 
     @property
@@ -51,15 +52,19 @@ class DyadicNPC(NPC):
         else:
             self.partner.inventory = value
 
-    def follow_partner(self):
+    def follow_partner(self) -> bool:
         current = np.asarray(self.get_tile_pos())
         partner = np.asarray(self.partner.get_tile_pos())
-        direction = current - partner
-        length = np.linalg.norm(direction)
-        target = partner + direction / length * 1 # stay 1 tile away from partner
+        # direction = current - partner
+        # length = np.linalg.norm(direction)
+        # target = partner + direction / length * 1 # stay 1 tile away from partner
+        target = partner
         x, y = target
         if not isnan(x) and not isnan(y):
-            self.create_path_to_tile((int(x), int(y)))
+            result =  self.create_path_to_tile((int(x), int(y)))
+            return result
+
+        return False
 
 
 
