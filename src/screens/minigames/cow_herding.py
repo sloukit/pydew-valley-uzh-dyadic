@@ -10,10 +10,11 @@ import pygame.gfxdraw
 from pathfinding.core.grid import Grid  # type: ignore[import-untyped]
 
 from src.controls import Controls
-from src.enums import Direction
-from src.exceptions import MinigameSetupError
+from src.enums import Direction, Color
+from src.exceptions import MinigameSetupError, InvalidMapError
 from src.groups import PersistentSpriteGroup
 from src.npc.cow import Cow
+from src.npc.dyadic.dyadic_npc import DyadicNPC
 from src.npc.npc import NPC
 from src.npc.path_scripting import AIScriptedPath, Waypoint
 from src.npc.setup import AIData
@@ -179,23 +180,34 @@ class CowHerding(Minigame):
 
         self.overlay = _CowHerdingOverlay()
         self.scoreboard = _CowHerdingScoreboard(self.finish)
-        opponent = NPC(
-            pos=(0, 0),
-            assets=ENTITY_ASSETS.RABBIT,
-            groups=(self._state.all_sprites, self._state.collision_sprites),
-            collision_sprites=self._state.collision_sprites,
-            apply_tool=lambda _, __, ___: None,
-            plant_collision=lambda _: None,
-            soil_manager=self._state.game_map.soil_manager,
-            emote_manager=self._state.game_map.npc_emote_manager,
-            tree_sprites=pygame.sprite.Group(),
-            npc_id=40,
-            has_hat=False,
-            has_necklace=False,
-            special_features=None,
-            is_v3=True,
-        )
-        self._state.game_map.npcs.append(opponent)
+        # opponent = DyadicNPC(
+        #     pos=(0, 0),
+        #     assets=ENTITY_ASSETS.RABBIT,
+        #     groups=(self._state.all_sprites, self._state.collision_sprites),
+        #     collision_sprites=self._state.collision_sprites,
+        #     apply_tool=lambda _, __, ___: None,
+        #     plant_collision=lambda _: None,
+        #     soil_manager=self._state.game_map.soil_manager,
+        #     emote_manager=self._state.game_map.npc_emote_manager,
+        #     tree_sprites=pygame.sprite.Group(),
+        #     npc_id=0,
+        #     special_features=None,
+        #     is_v3=True,
+        #     is_dyad_main=True,
+        #     partner_id=1,
+        #     hat=None,
+        #     necklace=Color.GREEN,
+        # )
+        opponent = None
+
+        for npc in self._state.game_map.npcs:
+            if npc.npc_id == 0:
+                opponent = npc
+                break
+
+        if opponent is None:
+            raise InvalidMapError("Cow-Herding minigame requires an NPC with id 0 as an opponent")
+
         self._player_side = CowHerdingSideState("L", self._state.player)
         self._opponent_side = CowHerdingSideState("R", opponent)
         #script_group = {StudyGroup.INGROUP: "ingroup", StudyGroup.OUTGROUP: "outgroup"}

@@ -764,19 +764,20 @@ class GameMap:
                 npc.conditional_behaviour_tree = NPCBehaviourTree.FARMING_DYADIC
             elif gmap == Map.FOREST:
                 npc.conditional_behaviour_tree = NPCBehaviourTree.WOODCUTTING_DYADIC
+            elif gmap == Map.MINIGAME:
+                npc.conditional_behaviour_tree = NPCBehaviourTree.CHEER
             else:
                 npc.conditional_behaviour_tree = NPCBehaviourTree.FOLLOW_PARTNER
             return npc
 
-        if behaviour != "Woodcutting" and gmap == Map.NEW_FARM:
+        if gmap == Map.NEW_FARM:
             npc.conditional_behaviour_tree = NPCBehaviourTree.FARMING
-        elif no_walking_npc:
-            npc.conditional_behaviour_tree = NPCBehaviourTree.DO_NOTHING
-        elif cheering:
-            npc.conditional_behaviour_tree = NPCBehaviourTree.CHEER
-            npc.facing_direction = Direction.RIGHT
-        else:
+        elif gmap == Map.FOREST:
             npc.conditional_behaviour_tree = NPCBehaviourTree.WOODCUTTING
+        elif gmap == Map.MINIGAME:
+            npc.conditional_behaviour_tree = None
+        else:
+            npc.conditional_behaviour_tree = NPCBehaviourTree.FOLLOW_PARTNER
         return npc
 
     def _setup_animal(self, pos: tuple[int, int], obj: TiledObject):
