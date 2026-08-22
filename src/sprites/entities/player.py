@@ -27,10 +27,11 @@ from typing import Any, Callable, Type
 import pygame  # noqa
 
 from src.controls import Controls
-from src.enums import FarmingTool, InventoryResource, ItemToUse
+from src.enums import FarmingTool, InventoryResource, ItemToUse, Color
 from src.events import OPEN_INVENTORY, START_QUAKE, post_event
 from src.gui.interface.emotes import PlayerEmoteManager
 from src.npc.bases.npc_base import NPCBase
+from src.npc.dyadic.dyadic_npc import DyadicNPC
 from src.savefile import SaveFile
 from src.settings import (
     DEBUG_MODE_VERSION,
@@ -70,6 +71,8 @@ class Player(Character):
     sounds: SoundDict
 
     allowed_seeds: list[str]
+
+    _has_goggles: bool = False
 
     def __init__(
         self,
@@ -151,6 +154,16 @@ class Player(Character):
         self.ingroup_member_interacted = False
         self.outgroup_member_interacted = False
 
+    @property
+    def has_goggles(self) -> bool:
+        return self._has_goggles
+
+    @has_goggles.setter
+    def has_goggles(self, value: bool) -> None:
+        self._has_goggles = value
+        if self.partner is not None:
+            self.partner.has_goggles = value
+
     def focus_entity(self, entity: Entity):
         if self.focused_entity:
             self.focused_entity.unfocus()
@@ -188,11 +201,15 @@ class Player(Character):
                 PLAYER_IS_BSICK_STR: self.is_bath_sick,
             },
         )
+        self.partner.get_sick(round_time)
 
     def set_hp(self, hp):
         self.hp = pygame.math.clamp(hp, 0, MAX_HP)
 
     def recover(self):
+        if self.is_bath_sick:
+            self.partner.recover()
+
         self.is_sick = False
         self.is_bath_sick = False
         self.set_hp(MAX_HP)

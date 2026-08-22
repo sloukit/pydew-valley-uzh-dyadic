@@ -1052,6 +1052,10 @@ class GameMap:
         for npc in self.npcs:
             if npc.partner_id == -1:
                 npc.partner = self.player
+                if self.player.is_bath_sick:
+                    npc.get_sick(self.player.bath_start_t)
+
+                npc.has_goggles = self.player.has_goggles
                 self.player.partner = npc
                 # Copy the player's partner's accessories to the player.
                 # This is done because the player object is not configured in farm_new.tmx
