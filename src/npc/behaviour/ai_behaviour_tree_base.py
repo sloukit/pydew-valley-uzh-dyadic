@@ -145,7 +145,7 @@ class Condition(Leaf):
     def run(self, context: ContextType | None):
         # TODO remove logging
         result = self.condition_func(context)
-        if hasattr(context, "npc") and context.npc.partner_id == -1:
+        if hasattr(context, "npc") and hasattr(context.npc, "partner_id") and context.npc.partner_id == -1:
             xplat.log(f"{self.condition_func.__name__}: {result}")
         return result
 
@@ -163,6 +163,6 @@ class Action(Leaf):
     def run(self, context: ContextType | None):
         # TODO remove logging
         result =  self.action_func(context)
-        if hasattr(context, "npc") and context.npc.partner_id == -1:
+        if hasattr(context, "npc") and hasattr(context.npc, "partner_id") and context.npc.partner_id == -1:
             xplat.log(f"{self.action_func.__name__}: {result}")
         return result

@@ -913,20 +913,16 @@
   </object>
   <object id="395" gid="732" x="382" y="272" width="20" height="21">
    <properties>
-    <property name="features" value="necklace_lightblue"/>
+    <property name="features" value="hat_green"/>
     <property name="group" value="INGROUP"/>
-    <property name="is_dyad_main" type="bool" value="true"/>
     <property name="npc_id" type="int" value="7"/>
-    <property name="partner_id" type="int" value="15"/>
    </properties>
   </object>
   <object id="396" gid="734" x="287" y="416" width="18" height="17">
    <properties>
     <property name="features" value="necklace_lightblue"/>
     <property name="group" value="INGROUP"/>
-    <property name="is_dyad_main" type="bool" value="false"/>
     <property name="npc_id" type="int" value="15"/>
-    <property name="partner_id" type="int" value="7"/>
    </properties>
   </object>
   <object id="397" gid="734" x="431" y="448" width="18" height="17">

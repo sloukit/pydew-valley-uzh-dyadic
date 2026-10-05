@@ -276,7 +276,7 @@ class GameMap:
     player_exit_warps: pygame.sprite.Group
 
     # non-player entities
-    npcs: list[DyadicNPC]
+    npcs: list[NPC]
     animals: list[Animal]
 
     round_config: dict[str, Any]
@@ -725,27 +725,48 @@ class GameMap:
                 if parts[i] == "hat":
                     hat = Color(parts[i+1])
 
-        is_dyad_main: bool = obj.properties.get("is_dyad_main")
-        partner_id: int = obj.properties.get("partner_id")
-        npc = DyadicNPC(
-            pos=pos,
-            assets=ENTITY_ASSETS.RABBIT,
-            # assets=copy.deepcopy(ENTITY_ASSETS.RABBIT),
-            groups=(self.all_sprites,),
-            collision_sprites=self.collision_sprites,
-            apply_tool=self.apply_tool,
-            plant_collision=self.plant_collision,
-            soil_manager=self.soil_manager,
-            emote_manager=self.npc_emote_manager,
-            tree_sprites=self.tree_sprites,
-            special_features=features,
-            is_dyad_main=is_dyad_main,
-            partner_id=partner_id,
-            npc_id=npc_id,
-            is_v3=self.get_game_version() == 3,
-            hat=hat,
-            necklace=necklace,
-        )
+        is_dyad_main: bool | None = obj.properties.get("is_dyad_main")
+        partner_id: int | None = obj.properties.get("partner_id")
+
+        if partner_id is None:
+            npc = NPC(
+                pos=pos,
+                assets=ENTITY_ASSETS.RABBIT,
+                groups=(self.all_sprites,),
+                collision_sprites=self.collision_sprites,
+                apply_tool=self.apply_tool,
+                plant_collision=self.plant_collision,
+                soil_manager=self.soil_manager,
+                emote_manager=self.npc_emote_manager,
+                tree_sprites=self.tree_sprites,
+                special_features=features,
+                is_dyad_main=False,
+                npc_id=npc_id,
+                is_v3=self.get_game_version() == 3,
+                hat=hat,
+                necklace=necklace,
+            )
+        else:
+            assert is_dyad_main is not None, "is_dyad_main needs to be defined if npc has a partner"
+            npc = DyadicNPC(
+                pos=pos,
+                assets=ENTITY_ASSETS.RABBIT,
+                groups=(self.all_sprites,),
+                collision_sprites=self.collision_sprites,
+                apply_tool=self.apply_tool,
+                plant_collision=self.plant_collision,
+                soil_manager=self.soil_manager,
+                emote_manager=self.npc_emote_manager,
+                tree_sprites=self.tree_sprites,
+                special_features=features,
+                is_dyad_main=is_dyad_main,
+                partner_id=partner_id,
+                npc_id=npc_id,
+                is_v3=self.get_game_version() == 3,
+                hat=hat,
+                necklace=necklace,
+            )
+
         npc.teleport(pos)
         self._reference_npc_in_mgr(npc_id, npc)
         # Ingroup NPCs wearing only the hat and no necklace should not be able to walk on the forest and town map,
@@ -759,7 +780,7 @@ class GameMap:
 
         behaviour = obj.properties.get("behaviour")
 
-        if not npc.is_dyad_main:
+        if isinstance(npc, DyadicNPC) and not npc.is_dyad_main:
             if gmap == Map.NEW_FARM:
                 npc.conditional_behaviour_tree = NPCBehaviourTree.FARMING_DYADIC
             elif gmap == Map.FOREST:
@@ -777,7 +798,7 @@ class GameMap:
         elif gmap == Map.MINIGAME:
             npc.conditional_behaviour_tree = None
         else:
-            npc.conditional_behaviour_tree = NPCBehaviourTree.FOLLOW_PARTNER
+            npc.conditional_behaviour_tree = NPCBehaviourTree.FARMING
         return npc
 
     def _setup_animal(self, pos: tuple[int, int], obj: TiledObject):
@@ -1050,17 +1071,18 @@ class GameMap:
         npc_dict = dict([(npc.npc_id, npc) for npc in self.npcs])
 
         for npc in self.npcs:
-            if npc.partner_id == -1:
-                npc.partner = self.player
-                if self.player.is_bath_sick:
-                    npc.get_sick(self.player.bath_start_t)
+            if isinstance(npc, DyadicNPC):
+                if npc.partner_id == -1:
+                    npc.partner = self.player
+                    if self.player.is_bath_sick:
+                        npc.get_sick(self.player.bath_start_t)
 
-                npc.has_goggles = self.player.has_goggles
-                self.player.partner = npc
-                # Copy the player's partner's accessories to the player.
-                # This is done because the player object is not configured in farm_new.tmx
-                self.player.hat = npc.hat
-                self.player.necklace = npc.necklace
-            else:
-                npc.partner = npc_dict[npc.partner_id]
+                    npc.has_goggles = self.player.has_goggles
+                    self.player.partner = npc
+                    # Copy the player's partner's accessories to the player.
+                    # This is done because the player object is not configured in farm_new.tmx
+                    self.player.hat = npc.hat
+                    self.player.necklace = npc.necklace
+                else:
+                    npc.partner = npc_dict[npc.partner_id]
 
