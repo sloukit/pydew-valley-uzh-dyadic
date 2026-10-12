@@ -753,6 +753,13 @@ def chop_target_tree(context: DyadicNPCContext) -> bool:
 
     return False
 
+def will_heart(context: DyadicNPCContext) -> bool:
+    return context.npc.partner_id == -1 and random.randint(0, 4) == 0
+
+def heart(context: DyadicNPCContext) -> bool:
+    context.npc.emote_manager.show_emote(context.npc, "love_ani")
+    return True
+
 # region behaviour trees
 class NPCBehaviourTree(NodeWrapper, Enum):
     FOLLOW_PARTNER = Selector(
@@ -760,6 +767,7 @@ class NPCBehaviourTree(NodeWrapper, Enum):
             Condition(is_away_from_partner),
             Action(follow_partner)
         ),
+        Sequence(Condition(will_heart), Action(heart)),
         Action(wander)
     )
     FARMING_DYADIC = Selector(
@@ -767,6 +775,7 @@ class NPCBehaviourTree(NodeWrapper, Enum):
             Condition(is_away_from_partner),
             Action(follow_partner),
         ),
+        Sequence(Condition(will_heart), Action(heart)),
         Sequence(
             Condition(will_farm),
             Selector(
@@ -816,6 +825,7 @@ class NPCBehaviourTree(NodeWrapper, Enum):
                 Condition(is_away_from_partner),
                 Action(follow_partner),
             ),
+            Sequence(Condition(will_heart), Action(heart)),
             Action(do_nothing)
         )
     )
